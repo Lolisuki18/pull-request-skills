@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: splits-mixed-branch-into-ordered-stack-without-rewriting
+expected_outcome: |
+  Measures the branch, sorts hunks into purposes (mechanical rename, refactor, feature with tests), finds that
+  the feature depends on the refactor, proposes a small ordered stack with bases, gives git commands for the
+  user to run, states a union-equals-original check, and does not rewrite history, push or invent PR numbers.
+context:
+  scaffold_script: place-files.sh
