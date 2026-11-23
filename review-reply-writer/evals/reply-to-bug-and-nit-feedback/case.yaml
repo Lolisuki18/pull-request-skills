@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: reply-to-bug-and-nit-feedback
+expected_outcome: |
+  Draft replies tagged to each reviewer comment. The bug fix reply provides specific details (what changed, the commit SHA, the test). The nit reply is concise. The question reply answers directly. No defensiveness or unnecessary apologies.
+context:
+  scaffold_script: place-files.sh

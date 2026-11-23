@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: bug-fix-uses-cause-fix-format
+expected_outcome: |
+  A concise PR description (~10-15 lines) following the bug-fix format: Problem, Cause, Fix, How to verify, and optional Notes. Imperative title under 70 chars. Root cause accurately stated from the ticket and diff. Regression test or verification steps concrete with [pass/fail] placeholder.
+context:
+  scaffold_script: place-files.sh

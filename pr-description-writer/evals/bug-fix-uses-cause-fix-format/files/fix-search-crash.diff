@@ -1,0 +1,28 @@
+diff --git a/src/services/search.ts b/src/services/search.ts
+index b1c2d3e..e4f5a6b 100644
+--- a/src/services/search.ts
++++ b/src/services/search.ts
+@@ -10,7 +10,8 @@ export async function searchUsers(query: string): Promise<User[]> {
+   if (!query.trim()) {
+     return [];
+   }
+-  const url = `/api/v1/users?q=${query}`;
++  const params = new URLSearchParams({ q: query });
++  const url = `/api/v1/users?${params.toString()}`;
+   const response = await fetch(url);
+   if (!response.ok) {
+     throw new Error(`Search failed: ${response.statusText}`);
+diff --git a/test/search.test.ts b/test/search.test.ts
+index 1122334..5566778 100644
+--- a/test/search.test.ts
++++ b/test/search.test.ts
+@@ -15,4 +15,10 @@ describe('searchUsers', () => {
+     const results = await searchUsers('alice');
+     expect(results).toHaveLength(1);
+   });
++
++  it('encodes special characters like & and %', async () => {
++    const results = await searchUsers('salary%increase & bonus');
++    expect(results).toBeDefined();
++  });
+ });

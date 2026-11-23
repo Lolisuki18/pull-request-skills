@@ -1,6 +1,6 @@
 ---
 name: pre-pr-self-review
-description: Check the user's OWN change before they open a pull request, by comparing the diff against the brief, ticket or acceptance criteria and looking for gaps, bugs, missing tests and leftover debris. Use this whenever the user says things like "check my changes before I open the PR", "is this ready for review", "did I miss anything from the brief/ticket", "tự review giúp tôi trước khi mở PR", "kiểm tra xem tôi làm đủ yêu cầu chưa", or hands over a branch plus a brief and wants to know what is still missing, even if they never say "self-review". Not for reviewing someone else's PR or writing review comments (use pr-review-writer for that).
+description: Checks the user's OWN changes before opening a pull request by verifying the diff against the brief, ticket, or acceptance criteria (traceability R1..Rn -> code -> test), detecting gaps, boundary bugs, and leftover debris. Use whenever the user asks to "check my changes before I open the PR", "is this ready for review", "did I miss anything from the brief/ticket", "tự review giúp tôi trước khi mở PR", "kiểm tra xem tôi làm đủ yêu cầu chưa", "tự review code của tôi", "check branch trước khi tạo PR", "kiểm tra xem có sót gì trong brief không", or provides a branch plus a specification. Do NOT use for reviewing someone else's PR (use pr-review-writer) or generating PR titles/descriptions (use pr-description-writer).
 ---
 
 # Pre-PR self-review
@@ -21,7 +21,7 @@ The output is a list for the author to act on, not comments to post.
 3. **Trace each one**: requirement → where the code does it (`file:line`) → which test covers it, or "no test" or "manual only". Mark each **covered / partial / missing / unclear**. Only mark covered for code you have read doing the thing. For acceptance cases with numbers, compute the expected result by hand and follow the code path. Briefs and reference code can contain mistakes; don't assume the reference snippet is right just because the brief says so.
 4. **Review the change itself** for defects, in priority order: correctness and edge cases, security, data and concurrency, tests, design and scope, readability. Read `references/numbers-and-money.md` when the change does arithmetic, rounding, money or percentages. Read `references/forms-and-validation.md` when it touches forms, inputs, error messages or UI states.
 5. **Check for debris and scope creep**: leftover `console.log`/`debugger`/print statements, commented-out code, TODOs without an owner or ticket, unrelated reformatting, files that shouldn't be committed (env files, build output, large lockfile churn), hardcoded test data or secrets, and changes outside what the brief asked for.
-6. **Run what can safely be run**, if the project defines it and it's quick: tests, lint, type-check. Report the actual result. If you didn't run something, say so. Never write that tests pass unless you saw them pass.
+6. **Run what can safely be run**, if the project defines it and it's quick: fast unit tests, lint, type-check. Avoid running tests with side effects (DB drop/seed, destructive operations) or expensive E2E suites. Report the actual result. If you didn't run something, say so. Never write that tests pass unless you saw them pass.
 7. **Report** in the format below.
 
 ## Report format

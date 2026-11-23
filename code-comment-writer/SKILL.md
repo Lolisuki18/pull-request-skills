@@ -1,6 +1,6 @@
 ---
 name: code-comment-writer
-description: Write or improve comments inside source code: doc comments (docstrings, JSDoc/TSDoc), inline "why" comments, TODOs, and cleaning up noisy, stale or commented-out comments. Use this whenever the user says "add comments to this code", "document this function", "write a docstring", "viết comment cho code", "explain this in a comment", "this comment is outdated", or asks to make a piece of code easier to understand by commenting it, even if they don't say "documentation". Not for pull-request descriptions or review comments.
+description: Writes or improves comments inside source code, focusing on "why" rather than "what" (doc comments like docstrings/TSDoc, inline "why" comments, TODOs, and cleaning noisy, stale or commented-out code). Use whenever the user asks to "add comments to this code", "document this function", "write a docstring", "viết comment cho code", "thêm comment vào code", "giải thích hàm này bằng comment", "viết docstring", "explain this in a comment", or clean up outdated comments. Do NOT use for pull-request descriptions (use pr-description-writer) or code-review comments (use pr-review-writer).
 ---
 
 # Code comment writer
@@ -16,7 +16,9 @@ The code already shows **what** it does. A comment earns its place by saying **w
 3. **Find the places a reader would get stuck.** Non-obvious decisions, workarounds, magic values, ordering or locking constraints, invariants, units, side effects, surprising edge cases, and public APIs without explanation.
 4. **Write or edit comments** following the rules below. Don't change code behaviour.
 5. **Verify each comment against the code** by tracing it. A wrong comment is worse than none.
-6. **Deliver**: if the user asked you to edit files, apply the edits and say what you changed; otherwise show the commented code or a diff.
+6. **Deliver**:
+   - By default, show the commented code or diff first so the user can review before modifying files.
+   - If the user explicitly asked to edit files directly, apply comment modifications only, verify that runtime behavior and code logic are untouched, and summarize the changes.
 
 ## What to comment
 
@@ -76,6 +78,21 @@ x = y * 1.1  # multiply y by 1.1
 
 # After
 x = y * 1.1  # 10% safety margin agreed with ops (OPS-48); remove if the quota API starts returning real limits
+```
+
+## Output format
+
+When presenting commented code in chat, use this structure:
+
+```markdown
+### Summary
+- Added doc comment explaining invariants and failure modes (`src/example.ts:12`).
+- Removed 2 stale commented-out lines.
+
+### Changes
+```ts
+// <code snippet with the new/updated comments>
+```
 ```
 
 ## Maintenance

@@ -1,6 +1,6 @@
 ---
 name: review-reply-writer
-description: Draft replies to code-review comments on the user's own pull request. Use this whenever the user pastes or links reviewer comments and wants to respond, says things like "reply to these review comments", "address the feedback", "the reviewer said...", "trả lời comment review", "how do I answer this reviewer", "I disagree with this comment", or asks for a "done" note / re-request message after fixing review feedback. Covers accepting a change, explaining why not, deferring to a follow-up, answering questions and pushing back politely.
+description: Drafts concise, professional replies to code-review comments received on the user's own pull request (accepting fixes, pushing back with technical evidence, answering questions, or deferring). Use whenever the user pastes or links reviewer comments and asks to "reply to these review comments", "address the feedback", "the reviewer said...", "trả lời comment review", "phản hồi review", "trả lời nhận xét PR", "reply comment review", "cách trả lời reviewer", "phản biện lại review comment", "how do I answer this reviewer", "I disagree with this comment", or asks for a re-request summary. Do NOT use for writing review feedback on someone else's code (use pr-review-writer) or writing PR descriptions (use pr-description-writer).
 ---
 
 # Review reply writer
@@ -122,5 +122,5 @@ Skip it when the round had only one or two comments.
 ## Other behaviour
 
 - **Language**: reply in the language the review thread uses (default English), even if the user chats in another language. Keep identifiers and ticket ids as they are.
-- **Posting**: draft only by default. Posting replies publishes them to other people, so do it only when the user explicitly asks, after they've seen the final text. For GitHub, a reply to an inline comment is `gh api repos/{owner}/{repo}/pulls/{n}/comments/{comment_id}/replies -f body='...'`.
+- **Posting**: draft only by default. Posting replies publishes them to other people, so do it only when the user explicitly asks, after they've seen the final text. For GitHub, a reply to an inline comment is `gh api repos/{owner}/{repo}/pulls/{n}/comments/{comment_id}/replies -f body='...'`; for a top-level PR comment or round summary use `gh api repos/{owner}/{repo}/issues/{n}/comments -f body='...'`.
 - **Writing review comments on someone else's PR** is a different job: use the `pr-review-writer` skill. **Writing the PR description** is `pr-description-writer`.

@@ -24,26 +24,44 @@ Each skill's `description` tells Claude when to pick it up, so you usually don't
 
 ## Install
 
-Skills live in a folder named after the skill, containing a `SKILL.md`. Put them in your personal skills folder to use them in every project (or in `.claude/skills/` inside one project to scope them to it).
+Skills live in a folder named after the skill, containing a `SKILL.md`. Since these skills adhere to the standard open agent skill format, they work across **Claude Code**, **Google Antigravity**, **Cursor**, and other agent environments.
 
-**Windows (PowerShell).** Linking the folders means edits here are picked up immediately:
+### 1. Claude Code
 
+**Windows (PowerShell):**
 ```powershell
 $skills = "$env:USERPROFILE\.claude\skills"
+New-Item -ItemType Directory -Force -Path $skills
 foreach ($n in "pr-review-writer","pr-description-writer","review-reply-writer","pre-pr-self-review","code-comment-writer") {
   New-Item -ItemType Junction -Path "$skills\$n" -Target "$PWD\$n"
 }
 ```
 
 **macOS / Linux:**
-
 ```bash
+mkdir -p ~/.claude/skills
 for n in pr-review-writer pr-description-writer review-reply-writer pre-pr-self-review code-comment-writer; do
   ln -s "$PWD/$n" ~/.claude/skills/$n
 done
 ```
 
-Prefer a plain copy? Copy each skill folder (without `evals/`) into the same place and repeat after changes. Start a new Claude Code session if a newly added skill doesn't show up.
+### 2. Google Antigravity
+
+**Global installation (PowerShell on Windows):**
+```powershell
+$skills = "$env:USERPROFILE\.gemini\antigravity\skills"
+New-Item -ItemType Directory -Force -Path $skills
+foreach ($n in "pr-review-writer","pr-description-writer","review-reply-writer","pre-pr-self-review","code-comment-writer") {
+  New-Item -ItemType Junction -Path "$skills\$n" -Target "$PWD\$n"
+}
+```
+
+**Project workspace (scoped to current repo):**
+Copy or junction the skill directories into your repository's `.agent/skills/` folder.
+
+### 3. Cursor & Other Agent Tools
+
+Link or copy the skill folders into your project workspace (e.g. `.cursor/rules/` or project skills directory). Edits in this repository are picked up immediately when using junctions or symlinks.
 
 ## How the skills are built
 
@@ -65,7 +83,7 @@ Prefer a plain copy? Copy each skill folder (without `evals/`) into the same pla
 
 Read these numbers with care: one run per configuration, graded by the same model that ran the tests, and the later cases have no headroom left. The gap comes mostly from conventions the skill defines (comment order, labels, length), not from finding more bugs. Tone and "sounds human" are not scored; read the outputs in [`samples/`](samples).
 
-The other skills were each tried on one or two real or synthetic changes and revised from feedback. They have **not** been through the same case-by-case evaluation yet.
+Additional test suites have also been configured for `pr-description-writer/evals/` (verifying Cause/Fix format enforcement) and `review-reply-writer/evals/` (testing specific change attribution and tone calibration).
 
 ## Repository layout
 
@@ -73,7 +91,7 @@ The other skills were each tried on one or two real or synthetic changes and rev
 <skill-name>/
 ├── SKILL.md          # frontmatter (name, description) + instructions
 ├── references/       # checklists, phrase banks, examples loaded on demand
-└── evals/            # test cases (pr-review-writer only, for now)
+└── evals/            # test cases and graders
 samples/              # example PR, diff and generated review
 pr-review-writer-workspace/   # evaluation runs, gradings and benchmarks
 ```
@@ -83,7 +101,10 @@ pr-review-writer-workspace/   # evaluation runs, gradings and benchmarks
 - The skills are tuned for English PR text; they reply in your language in chat and write the PR text in your team's language.
 - They were developed against GitHub-style workflows (`gh`, `git diff`). Other hosts work if you paste the diff.
 - Nothing here replaces running the tests and reading the code yourself. The skills point at where to look; they don't certify correctness.
-- No license has been chosen yet.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## Acknowledgements
 

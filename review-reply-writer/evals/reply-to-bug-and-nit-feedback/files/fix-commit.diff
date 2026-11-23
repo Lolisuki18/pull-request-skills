@@ -1,0 +1,43 @@
+commit a8f9c1234567890abcdef1234567890abcdef12
+Author: Alex Developer <alex@example.com>
+Date:   Mon Nov 23 10:15:00 2026 +0000
+
+    fix: Fix off-by-one in rate limiter and rename storage map
+
+diff --git a/src/middleware/rateLimit.js b/src/middleware/rateLimit.js
+index 1a2b3c4..5d6e7f8 100644
+--- a/src/middleware/rateLimit.js
++++ b/src/middleware/rateLimit.js
+@@ -1,7 +1,7 @@
+ module.exports = function rateLimit(options = {}) {
+   const windowMs = options.windowMs || 60000;
+   const limit = options.limit || 100;
+-  const data = new Map();
++  const hits = new Map();
+ 
+   return function(req, res, next) {
+     const key = req.ip;
+@@ -12,7 +12,7 @@ module.exports = function rateLimit(options = {}) {
+     }
+-    if (entry.count++ > limit) {
++    if (++entry.count > limit) {
+       return res.status(429).json({ error: 'Too Many Requests' });
+     }
+     next();
+diff --git a/test/rateLimit.test.js b/test/rateLimit.test.js
+index 9988776..1122334 100644
+--- a/test/rateLimit.test.js
++++ b/test/rateLimit.test.js
+@@ -25,4 +25,12 @@ describe('rateLimit middleware', () => {
+     await request(app).get('/api').expect(200);
+     await request(app).get('/api').expect(429);
+   });
++
++  it('strictly rejects the (limit + 1)-th request when limit is 3', async () => {
++    const app = makeApp({ limit: 3 });
++    await request(app).get('/api').expect(200);
++    await request(app).get('/api').expect(200);
++    await request(app).get('/api').expect(200);
++    await request(app).get('/api').expect(429);
++  });
+ });
