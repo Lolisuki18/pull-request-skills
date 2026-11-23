@@ -14,7 +14,7 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 1. **Gather what the diff cannot tell you.**
    - Diff and history: `git diff <base>...HEAD --stat`, then the diff itself, and `git log <base>..HEAD --oneline`. Find the base from the branch's upstream or ask.
    - Intent: a linked issue, ticket, brief or spec if the user mentions one (read it; it is usually where the *why* lives), and the commit messages.
-   - Conventions: a PR template (`.github/pull_request_template.md` or similar) and the style of recent merged PR titles (`gh pr list --state merged -L 5`). If a template exists, fill it in concisely rather than replacing it.
+   - Conventions: a PR template (`.github/pull_request_template.md` or similar) and the style of recent merged PR titles (`gh pr list --state merged -L 5`). If a template exists, follow it (see "If the repo has a PR template" below).
 2. **Decide the one-sentence "what" and "why" first.** If you can't, you don't understand the change yet; read more or ask one short question. Never invent a motivation to fill the slot.
 3. **Write** using the format below.
 4. **Mark unknowns** with `[brackets]` for the user to fill (issue number, test results, screenshots). Do not guess them.
@@ -41,6 +41,12 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 ```
 
 **Length**: a typical PR fits in about 15 lines. A one-line fix needs two to four. Go longer only for something genuinely risky (migration, public API change, security), and then put the risk first, not last.
+
+**If the repo has a PR template**: keep its headings, field order and checklist exactly as they are, and write the content inside the matching section (usually the description). Put What / Why / How to test in that section, not around it. Fill ticket-ID fields from what you read, or leave a `[placeholder]`. Don't tick checklist boxes: ticking says "I did this", and you haven't verified it; tell the user which boxes they can tick once they've done the thing.
+
+**If the PR is tied to a release checklist**: add a short **Pending before release** list (at most about four bullets) for things that aren't code and can't be settled by the diff: a publish date, a staging check, an accessibility check with a screen reader, an open question for whoever wrote the brief. This is separate from Notes so the reviewer can see what is still open.
+
+**If the PR spans many areas** (pages, services, packages): don't write one long paragraph. Group by area, one line per group, then the shared Why and How to test once. Length can grow with the number of groups, but each group stays one line.
 
 ## What belongs, what doesn't
 
@@ -73,7 +79,7 @@ Tell the user in the chat, separately from the description, and suggest fixing i
 | Bug fix | The symptom and cause in one line | A repro and the expected result; mention a regression test |
 | Feature | What the user can now do | How to try it; flag or rollout notes |
 | Refactor | "No behaviour change" and how you know | Where to look for risk |
-| UI change | What changed visually | Screenshot or recording placeholder; responsive/a11y notes if relevant |
+| UI change | What changed visually | A list of the screenshots to attach, one per change, each with a name and what it should show (for example "pricing-mobile.png: new card, highlighted in a red box"); responsive/a11y notes if relevant |
 | Migration / data | The risk and rollback | Order of deploy; whether it is reversible |
 | Dependency bump | Old → new version and why | Breaking changes found, how tested |
 | Config / infra | What changes in which environment | How to verify safely |
@@ -89,7 +95,7 @@ Tell the user in the chat, separately from the description, and suggest fixing i
 ## Other behaviour
 
 - **Shortening an existing draft**: keep their facts and structure where possible, cut by the "leave out" list, and show the shorter version. Don't add content they didn't have.
-- **Language**: write in the language the team uses on PRs (default English). If the user asks for Vietnamese or another language, translate the prose and keep code, identifiers and ticket ids as they are.
+- **Language**: talk to the user in their language. Write the PR itself in the team's language (infer it from the template and recent merged PRs; default English), even if the user chats in another language. If they explicitly ask for the PR in another language, do that. Keep code, identifiers, ticket ids and UI strings as they are.
 - **Opening the PR**: only draft the text by default. Running `gh pr create` publishes it to other people, so do it only when the user explicitly asks, and show the final title and body first.
 - **Reviewing someone else's PR description** is a different job: use the `pr-review-writer` skill if it is available.
 
