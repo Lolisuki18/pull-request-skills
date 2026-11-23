@@ -1,6 +1,6 @@
 ---
 name: pr-description-writer
-description: Writes concise titles and descriptions (~15 lines) for the user's own pull requests (supporting feature PRs and bug-fix Cause/Fix format). Use whenever the user asks to "write my PR description", "PR title", "describe this PR", "what should I put in the PR", "viết description cho PR", "tạo mô tả PR", "viết PR description", "viết nội dung PR", "tạo title và description PR", "I'm about to open a PR", or provides a diff, branch, commits, or ticket to prepare a PR. Also shortens or tightens existing drafts. Do NOT use for reviewing someone else's PR or PR description (use pr-review-writer), or for self-checking requirements before opening a PR (use pre-pr-self-review).
+description: Writes concise titles and descriptions (~15 lines) for the user's own pull requests (supporting feature PRs and bug-fix Cause/Fix format). Use when the user says 'write my PR description', 'PR title', 'describe this PR', 'what should I put in the PR'. Do NOT use for reviewing someone else's PR or PR description (use pr-review-writer), or for self-checking requirements before opening a PR (use pre-pr-self-review).
 ---
 
 # PR description writer

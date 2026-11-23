@@ -1,6 +1,6 @@
 ---
 name: review-reply-writer
-description: Drafts concise, professional replies to code-review comments received on the user's own pull request (accepting fixes, pushing back with technical evidence, answering questions, or deferring). Use whenever the user pastes or links reviewer comments and asks to "reply to these review comments", "address the feedback", "the reviewer said...", "trả lời comment review", "phản hồi review", "trả lời nhận xét PR", "reply comment review", "cách trả lời reviewer", "phản biện lại review comment", "how do I answer this reviewer", "I disagree with this comment", or asks for a re-request summary. Do NOT use for writing review feedback on someone else's code (use pr-review-writer) or writing PR descriptions (use pr-description-writer).
+description: Drafts concise, professional replies to code-review comments received on the user's own pull request (accepting fixes, pushing back with technical evidence, answering questions, or deferring). Use when the user says 'reply to these review comments', 'address the feedback', 'the reviewer said...', 'reply comment review'. Do NOT use for writing review feedback on someone else's code (use pr-review-writer) or writing PR descriptions (use pr-description-writer).
 ---
 
 # Review reply writer

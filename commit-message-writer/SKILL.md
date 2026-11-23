@@ -1,6 +1,6 @@
 ---
 name: commit-message-writer
-description: Writes commit messages and branch names from the staged diff, following the repository's own convention (Conventional Commits when none exists), and proposes how to split a messy working tree into focused commits. Use whenever the user asks to "write a commit message", "name this branch", "what should I commit", "split my changes into commits", "squash message", "viết commit message", "đặt tên commit", "đặt tên branch", "tách thay đổi thành nhiều commit", "commit này nên ghi gì". Do NOT use for pull-request titles or descriptions (use pr-description-writer), reviewing code (use pr-review-writer or pre-pr-self-review), or writing comments inside source code (use code-comment-writer).
+description: Writes commit messages and branch names from the staged diff, following the repository's own convention (Conventional Commits when none exists). Use when the user says 'write a commit message', 'name this branch', 'what should I commit', 'split my changes into commits'. Do NOT use for pull-request titles or descriptions (use pr-description-writer), reviewing code (use pr-review-writer or pre-pr-self-review), or writing comments inside source code (use code-comment-writer).
 ---
 
 # Commit message writer

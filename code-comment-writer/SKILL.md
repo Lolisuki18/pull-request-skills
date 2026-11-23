@@ -1,6 +1,6 @@
 ---
 name: code-comment-writer
-description: Writes or improves comments inside source code, focusing on "why" rather than "what" (doc comments like docstrings/TSDoc, inline "why" comments, TODOs, and cleaning noisy, stale or commented-out code). Use whenever the user asks to "add comments to this code", "document this function", "write a docstring", "viết comment cho code", "thêm comment vào code", "giải thích hàm này bằng comment", "viết docstring", "explain this in a comment", or clean up outdated comments. Do NOT use for pull-request descriptions (use pr-description-writer) or code-review comments (use pr-review-writer).
+description: Writes or improves comments inside source code, focusing on "why" rather than "what" (doc comments like docstrings/TSDoc, inline "why" comments, TODOs, and cleaning noisy, stale or commented-out code). Use when the user says 'add comments to this code', 'document this function', 'write a docstring', 'explain this in a comment'. Do NOT use for pull-request descriptions (use pr-description-writer) or code-review comments (use pr-review-writer).
 ---
 
 # Code comment writer

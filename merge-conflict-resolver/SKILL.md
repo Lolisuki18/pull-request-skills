@@ -1,6 +1,6 @@
 ---
 name: merge-conflict-resolver
-description: Resolves git merge and rebase conflicts one file at a time by understanding what each side intended, producing a resolution with an explanation, and verifying the result builds and passes tests before anything is committed. Use whenever the user says "resolve these merge conflicts", "help me with this rebase", "conflict in this file", "both branches changed the same lines", "git merge failed", "giải quyết conflict", "xử lý xung đột merge", "rebase bị conflict", "gộp code hai nhánh bị trùng", "conflict này giữ bên nào". Do NOT use for reviewing the merged code (use pr-review-writer), writing a PR description (use pr-description-writer), or fixing a failing CI run (use ci-failure-triager).
+description: Resolves git merge and rebase conflicts one file at a time by understanding what each side intended, producing a resolution with an explanation. Use when the user says 'resolve these merge conflicts', 'help me with this rebase', 'conflict in this file', 'both branches changed the same lines'. Do NOT use for reviewing the merged code (use pr-review-writer), writing a PR description (use pr-description-writer), or fixing a failing CI run (use ci-failure-triager).
 ---
 
 # Merge conflict resolver

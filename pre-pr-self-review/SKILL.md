@@ -1,6 +1,6 @@
 ---
 name: pre-pr-self-review
-description: Checks the user's OWN changes before opening a pull request by verifying the diff against the brief, ticket, or acceptance criteria (traceability R1..Rn -> code -> test), detecting gaps, boundary bugs, and leftover debris. Use whenever the user asks to "check my changes before I open the PR", "is this ready for review", "did I miss anything from the brief/ticket", "tự review giúp tôi trước khi mở PR", "kiểm tra xem tôi làm đủ yêu cầu chưa", "tự review code của tôi", "check branch trước khi tạo PR", "kiểm tra xem có sót gì trong brief không", or provides a branch plus a specification. Do NOT use for reviewing someone else's PR (use pr-review-writer) or generating PR titles/descriptions (use pr-description-writer).
+description: Checks the user's OWN changes before opening a pull request by verifying the diff against the brief, ticket, or acceptance criteria (traceability R1..Rn -> code -> test), detecting gaps. Use when the user says 'check my changes before I open the PR', 'is this ready for review', 'did I miss anything from the brief/ticket'. Do NOT use for reviewing someone else's PR (use pr-review-writer) or generating PR titles/descriptions (use pr-description-writer).
 ---
 
 # Pre-PR self-review

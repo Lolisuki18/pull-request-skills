@@ -1,6 +1,6 @@
 ---
 name: pr-review-writer
-description: Reviews pull requests or git diffs of someone else's code like a thoughtful teammate, producing weighted inline comments (blocking, suggestion, nit, question, praise) and a summary verdict. Use whenever the user asks to "review a PR", "review this diff", "write code review comments", "give feedback on this PR", "review PR giúp tôi", "review diff này", "nhận xét code PR này", "viết comment review code", "review code giúp tôi", or pastes a PR link/diff of someone else's change. Also rewrites harsh review comments. Do NOT use for checking the user's OWN code before opening a PR (use pre-pr-self-review), replying to review comments (use review-reply-writer), or drafting PR descriptions (use pr-description-writer).
+description: Reviews pull requests or git diffs of someone else's code like a thoughtful teammate, producing weighted inline comments (blocking, suggestion, nit, question, praise) and a summary verdict. Use when the user says 'review a PR', 'review this diff', 'write code review comments', 'give feedback on this PR'. Do NOT use for checking the user's OWN code before opening a PR (use pre-pr-self-review), replying to review comments (use review-reply-writer), or drafting PR descriptions (use pr-description-writer).
 ---
 
 # PR review writer

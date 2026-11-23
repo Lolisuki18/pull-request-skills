@@ -1,6 +1,6 @@
 ---
 name: pr-splitter
-description: Splits an oversized or mixed pull request into a small ordered stack of reviewable PRs by grouping hunks by purpose and dependency, and drafts the branch names, commit plan and git commands, without rewriting anything until the user agrees. Use whenever the user says "this PR is too big", "split this PR", "break this into smaller PRs", "stack of PRs", "separate the refactor from the feature", "reviewer asked me to split it", "tách PR này nhỏ ra", "PR quá lớn", "chia PR thành nhiều phần", "tách refactor khỏi feature", "reviewer yêu cầu tách PR". Do NOT use for reviewing a PR (use pr-review-writer), writing a PR description (use pr-description-writer), splitting working-tree changes into commits only (use commit-message-writer), or resolving conflicts (use merge-conflict-resolver).
+description: Splits an oversized or mixed pull request into a small ordered stack of reviewable PRs by grouping hunks by purpose and dependency, and drafts the branch names, commit plan and git commands. Use when the user says 'this PR is too big', 'split this PR', 'break this into smaller PRs', 'stack of PRs'. Do NOT use for reviewing a PR (use pr-review-writer), writing a PR description (use pr-description-writer), splitting working-tree changes into commits only (use commit-message-writer), or resolving conflicts (use merge-conflict-resolver).
 ---
 
 # PR splitter
