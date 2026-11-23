@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: mixed-staged-change-gets-split-and-follows-convention
+expected_outcome: |
+  Reads the staged diff and recent history, follows the repo's Conventional Commits style, notices the staged
+  change mixes a bug fix and unrelated formatting and proposes a split, writes imperative subjects, invents no
+  ticket numbers and does not run git commit.
+context:
+  scaffold_script: place-files.sh
