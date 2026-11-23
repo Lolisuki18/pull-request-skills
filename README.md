@@ -1,6 +1,6 @@
 # pull-request-skills
 
-A small set of [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills) for the whole life of a pull request, written so the output reads like a thoughtful teammate wrote it: specific, short, labelled by weight, and honest about what was and wasn't checked.
+A set of nine [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills) for the whole life of a pull request, written so the output reads like a thoughtful teammate wrote it: specific, short, labelled by weight, and honest about what was and wasn't checked.
 
 | Skill                                                     | Use it when                      | What you get                                                                                                              |
 | --------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -9,6 +9,10 @@ A small set of [Claude Code skills](https://docs.claude.com/en/docs/claude-code/
 | [`review-reply-writer`](review-reply-writer/SKILL.md)     | You received review comments     | One short reply per comment: fixed (with what changed), kept (with a reason), deferred, or a question back                |
 | [`pre-pr-self-review`](pre-pr-self-review/SKILL.md)       | Before you open your own PR      | A check of the diff against the brief or ticket: requirement coverage, bugs, missing tests, leftover debris               |
 | [`code-comment-writer`](code-comment-writer/SKILL.md)     | You want comments in source code | Comments that explain _why_, not _what_; stale and noisy comments cleaned up                                              |
+| [`commit-message-writer`](commit-message-writer/SKILL.md) | Before you commit                | Commit message and branch name in the repo's convention (Conventional Commits by default); a plan to split a messy tree   |
+| [`ci-failure-triager`](ci-failure-triager/SKILL.md)       | CI is red on your PR             | The first real failure from the log, classified (bug / flake / config / dependency / infra), with the smallest fix         |
+| [`merge-conflict-resolver`](merge-conflict-resolver/SKILL.md) | A merge or rebase conflicts  | Per-file resolution with the intent of each side explained, verified by build and tests before anything is committed       |
+| [`pr-splitter`](pr-splitter/SKILL.md)                     | Your PR is too big               | An ordered stack of small PRs with branch plan and git commands; nothing is rewritten without your go-ahead              |
 
 ## Example prompts
 
@@ -18,6 +22,10 @@ write the title and description for my PR (ticket: FIN-88)
 the reviewer left these comments, help me reply: <paste comments>
 check my branch against the brief before I open the PR: brief.docx
 add comments to src/services/twins.ts, only where they're needed
+write the commit message for what I staged
+the CI check on my PR is red, find out why
+resolve the conflicts from this rebase
+this PR is too big, split it into smaller ones
 ```
 
 Each skill's `description` tells Claude when to pick it up, so you usually don't have to name it.
@@ -26,6 +34,16 @@ Each skill's `description` tells Claude when to pick it up, so you usually don't
 
 Skills live in a folder named after the skill, containing a `SKILL.md`. Since these skills adhere to the standard open agent skill format, they work across **Claude Code**, **Google Antigravity**, **Cursor**, and other agent environments.
 
+### 0. One command (any agent, any OS)
+
+```bash
+python scripts/install.py                         # links every skill into ~/.claude/skills
+python scripts/install.py --agent gemini          # presets: claude, gemini, cursor, codex, antigravity, windsurf, cline, roo, agents
+python scripts/install.py --dry-run               # preview; --copy to copy; --uninstall to remove
+```
+
+Junctions on Windows (no admin), symlinks elsewhere; existing skills are never overwritten. The manual steps below do the same by hand.
+
 ### 1. Claude Code
 
 **Windows (PowerShell):**
@@ -33,7 +51,7 @@ Skills live in a folder named after the skill, containing a `SKILL.md`. Since th
 ```powershell
 $skills = "$env:USERPROFILE\.claude\skills"
 New-Item -ItemType Directory -Force -Path $skills
-foreach ($n in "pr-review-writer","pr-description-writer","review-reply-writer","pre-pr-self-review","code-comment-writer") {
+foreach ($n in (Get-ChildItem -Directory | Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") }).Name) {
   New-Item -ItemType Junction -Path "$skills\$n" -Target "$PWD\$n"
 }
 ```
@@ -42,8 +60,8 @@ foreach ($n in "pr-review-writer","pr-description-writer","review-reply-writer",
 
 ```bash
 mkdir -p ~/.claude/skills
-for n in pr-review-writer pr-description-writer review-reply-writer pre-pr-self-review code-comment-writer; do
-  ln -s "$PWD/$n" ~/.claude/skills/$n
+for d in */; do
+  [ -f "$d/SKILL.md" ] && ln -s "$PWD/${d%/}" ~/.claude/skills/${d%/}
 done
 ```
 
@@ -54,7 +72,7 @@ done
 ```powershell
 $skills = "$env:USERPROFILE\.gemini\antigravity\skills"
 New-Item -ItemType Directory -Force -Path $skills
-foreach ($n in "pr-review-writer","pr-description-writer","review-reply-writer","pre-pr-self-review","code-comment-writer") {
+foreach ($n in (Get-ChildItem -Directory | Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") }).Name) {
   New-Item -ItemType Junction -Path "$skills\$n" -Target "$PWD\$n"
 }
 ```
@@ -66,7 +84,6 @@ Copy or junction the skill directories into your repository's `.agents/skills/` 
 
 Link or copy the skill folders into the agent's skills directory: Cursor `.cursor/skills/` (also reads `.claude/skills/`), Gemini CLI `.gemini/skills/` or `.agents/skills/`, Codex `.agents/skills/`. Paths change between versions, so confirm in your agent's docs. Edits in this repository are picked up immediately when using junctions or symlinks.
 
-For a one-command install of skills across agents, `dev-workflow-skills/scripts/install.py` also works on this repo's folders (`--target <dir>`).
 
 ## Sibling repos
 
@@ -74,7 +91,8 @@ For a one-command install of skills across agents, `dev-workflow-skills/scripts/
 |---|---|
 | [`dev-workflow-skills`](https://github.com/Lolisuki18/dev-workflow-skills) | idea → plan → code → tests → audit, bug investigation. Its `dev-lifecycle` offers `pre-pr-self-review` and `pr-description-writer` from this repo at the end |
 | [`pull-request-skills`](https://github.com/Lolisuki18/pull-request-skills) (this one) | PR description, PR review, review replies, pre-PR self-review, code comments |
-| [`qa-workflow-skills`](https://github.com/Lolisuki18/qa-workflow-skills) | QA/STLC: test plan, test matrix, E2E, defects, summary report |
+| [`qa-workflow-skills`](https://github.com/Lolisuki18/qa-workflow-skills) | QA/STLC: test plan, test matrix, E2E, API, non-functional, regression, defects, summary report |
+| `ai-workflow-suite` | `delivery-lifecycle` orchestrator across all four repos, shared `CONVENTIONS.md`, `install-all.py` |
 | [`docs-workflow-skills`](https://github.com/Lolisuki18/docs-workflow-skills) | README, diagrams, API docs, ADRs, SDLC reports, Review 2 pack |
 
 ## How the skills are built
@@ -88,7 +106,7 @@ For a one-command install of skills across agents, `dev-workflow-skills/scripts/
 
 ## Evaluation
 
-`pr-review-writer` was evaluated with test cases in [`pr-review-writer/evals/`](pr-review-writer/evals) (a PR with planted bugs, a clean PR, a harmless-but-suspicious PR, an oversized mixed PR, and a harsh comment to rewrite). The runs and gradings are kept in [`pr-review-writer-workspace/`](pr-review-writer-workspace).
+`pr-review-writer` was evaluated with test cases in [`pr-review-writer/evals/`](pr-review-writer/evals) (a PR with planted bugs, a clean PR, a harmless-but-suspicious PR, an oversized mixed PR, and a harsh comment to rewrite). The benchmark summaries of both iterations are in [`pr-review-writer/evals/results/`](pr-review-writer/evals/results). The full runs and per-case gradings (about 100 files) were moved out of this repo to keep it small; they are not published here.
 
 |                                                           | Pass rate                   |
 | --------------------------------------------------------- | --------------------------- |
@@ -97,7 +115,15 @@ For a one-command install of skills across agents, `dev-workflow-skills/scripts/
 
 Read these numbers with care: one run per configuration, graded by the same model that ran the tests, and the later cases have no headroom left. The gap comes mostly from conventions the skill defines (comment order, labels, length), not from finding more bugs. Tone and "sounds human" are not scored; read the outputs in [`samples/`](samples).
 
-Additional test suites have also been configured for `pr-description-writer/evals/` (verifying Cause/Fix format enforcement) and `review-reply-writer/evals/` (testing specific change attribution and tone calibration).
+Eval cases (one per skill, same format, graded by LLM graders; not yet run) exist for `commit-message-writer`, `ci-failure-triager`, `merge-conflict-resolver` and `pr-splitter`: each scaffolds a real git repo or log files with `place-files.sh`. Additional test suites have also been configured for `pr-description-writer/evals/` (verifying Cause/Fix format enforcement) and `review-reply-writer/evals/` (testing specific change attribution and tone calibration).
+
+## Validation
+
+```bash
+python scripts/validate.py
+```
+
+Checks names, description rules (third person, at most 900 characters, `Do NOT use`, Vietnamese triggers, no duplicate triggers), file sizes, balanced code fences and that referenced files exist. Runs in GitHub Actions on every push and pull request. 
 
 ## Repository layout
 
@@ -107,7 +133,6 @@ Additional test suites have also been configured for `pr-description-writer/eval
 ├── references/       # checklists, phrase banks, examples loaded on demand
 └── evals/            # test cases and graders
 samples/              # example PR, diff and generated review
-pr-review-writer-workspace/   # evaluation runs, gradings and benchmarks
 ```
 
 ## Status and limitations

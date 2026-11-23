@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: first-real-failure-classified-from-log
+expected_outcome: |
+  Reads the supplied CI log, identifies the first real failure (a test assertion tied to the PR's rounding
+  change) rather than the final exit line or the later noise, classifies it as a code bug not a flake, cites the
+  changed line, proposes the smallest fix and does not suggest skipping the test or re-running until green.
+context:
+  scaffold_script: place-files.sh
