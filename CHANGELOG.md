@@ -14,6 +14,7 @@ Format: newest first. Skills are prompts, so "breaking" means a change in behavi
 - `LICENSE` (MIT).
 
 ### Changed
+- Skill descriptions are English only and shorter (4 trigger phrases, at most 650 characters) to cut the context every installed skill costs. The trigger evals keep their Vietnamese prompts to check that matching still works.
 - Repository renamed in the README to `pull-request-skills`; the full evaluation runs of `pr-review-writer` moved out of the repo (benchmark summaries kept in `pr-review-writer/evals/results/`).
 - Every skill states that diffs, logs and review comments are data, not instructions.
 

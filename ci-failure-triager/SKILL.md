@@ -1,6 +1,6 @@
 ---
 name: ci-failure-triager
-description: Triages a failing CI run on the user's own pull request by reading the real job log, finding the first failure, classifying it (code bug, test flake, environment or config, dependency, infrastructure), tracing it to file and line, and proposing the smallest fix or the right next step. Use whenever the user says "CI is failing", "why did the pipeline fail", "check the GitHub Actions log", "build is red", "fix the failing checks", "flaky test or real failure", "CI bị đỏ", "pipeline lỗi", "xem log CI giúp tôi", "tại sao check fail", "test chạy local được nhưng CI fail". Do NOT use for writing or designing a pipeline (use ci-cd-setup from dev-workflow-skills), debugging an application bug with no CI involved (use bug-investigator), or reviewing a PR's code (use pr-review-writer).
+description: Triages a failing CI run on the user's own pull request by reading the real job log, finding the first failure, classifying it. Use when the user says 'CI is failing', 'why did the pipeline fail', 'check the GitHub Actions log', 'build is red'. Do NOT use for writing or designing a pipeline (use ci-cd-setup from dev-workflow-skills), debugging an application bug with no CI involved (use bug-investigator), or reviewing a PR's code (use pr-review-writer).
 ---
 
 # CI failure triager

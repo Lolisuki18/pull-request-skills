@@ -21,10 +21,10 @@ A set of nine [Claude Code skills](https://docs.claude.com/en/docs/claude-code/s
 
 | Skill | What it does |
 |---|---|
-| [`ci-failure-triager`](ci-failure-triager/SKILL.md) | Triages a failing CI run on the user's own pull request by reading the real job log, finding the first failure, classifying it (code bug, test flake, environment or... |
+| [`ci-failure-triager`](ci-failure-triager/SKILL.md) | Triages a failing CI run on the user's own pull request by reading the real job log, finding the first failure, classifying it |
 | [`code-comment-writer`](code-comment-writer/SKILL.md) | Writes or improves comments inside source code, focusing on "why" rather than "what" (doc comments like docstrings/TSDoc, inline "why" comments, TODOs, and cleaning... |
-| [`commit-message-writer`](commit-message-writer/SKILL.md) | Writes commit messages and branch names from the staged diff, following the repository's own convention (Conventional Commits when none exists), and proposes how to... |
-| [`merge-conflict-resolver`](merge-conflict-resolver/SKILL.md) | Resolves git merge and rebase conflicts one file at a time by understanding what each side intended, producing a resolution with an explanation, and verifying the result... |
+| [`commit-message-writer`](commit-message-writer/SKILL.md) | Writes commit messages and branch names from the staged diff, following the repository's own convention (Conventional Commits when none exists) |
+| [`merge-conflict-resolver`](merge-conflict-resolver/SKILL.md) | Resolves git merge and rebase conflicts one file at a time by understanding what each side intended, producing a resolution with an explanation |
 | [`pr-description-writer`](pr-description-writer/SKILL.md) | Writes concise titles and descriptions (~15 lines) for the user's own pull requests (supporting feature PRs and bug-fix Cause/Fix format) |
 | [`pr-review-writer`](pr-review-writer/SKILL.md) | Reviews pull requests or git diffs of someone else's code like a thoughtful teammate, producing weighted inline comments (blocking, suggestion, nit, question, praise)... |
 | [`pr-splitter`](pr-splitter/SKILL.md) | Splits an oversized or mixed pull request into a small ordered stack of reviewable PRs by grouping hunks by purpose and dependency, and drafts the branch names, commit... |
@@ -152,7 +152,7 @@ One run each by a Claude subagent that was given only the `SKILL.md` and the use
 python scripts/validate.py
 ```
 
-Checks names, description rules (third person, at most 900 characters, `Do NOT use`, Vietnamese triggers, no duplicate triggers), file sizes, balanced code fences and that referenced files exist. Runs in GitHub Actions on every push and pull request. 
+Checks names, description rules (English only, third person, at most 650 characters, `Do NOT use`, no duplicate triggers), file sizes, balanced code fences and that referenced files exist. Runs in GitHub Actions on every push and pull request. 
 
 ## Repository layout
 
