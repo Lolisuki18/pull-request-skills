@@ -31,20 +31,36 @@ The reviewer's question on every comment is "what did you do about this?". A goo
 4. **Write one reply per comment**, plus an optional short summary for the review round (see below).
 5. **Self-check**, then hand over the drafts, each tagged with the comment it answers (`file:line` or a short quote), ready to paste. Put the replies first. Add a short note for the user afterwards, **at most about four lines**, listing only what they must act on: placeholders to fill, promises they'd be making, and anything where the reviewer's claim and the code disagree.
 
-## What a reply contains
+## Start every reply with the answer: fixed or not fixed
 
-One outcome, one reason when it isn't "fixed", and a pointer when you changed something.
+The reviewer's first question is "did you change it?". So the **first words of every reply give the status**, before any explanation. Someone skimming the thread should be able to tell which comments were acted on without reading further.
 
-| Outcome | Shape | Example |
+| Opener | Meaning | Then say |
 |---|---|---|
-| Fixed | Say what the change is (see "Be specific about the change" below), then the commit | `Good catch. In `formatEstimate` the label now comes from the difference rounded to cents, not the raw float. Test added for the empty list. Fixed in abc1234.` |
-| Fixed differently | What you did and why | `Went with a lookup table instead of the if/else chain, since we'll add more cases next sprint. Done in abc1234.` |
-| Keep as is | Acknowledge, reason, stay open | `I see the point, but I'd keep this: it matches how the other handlers do it (see orders.js:40). Happy to change all of them in a separate PR if you'd like.` |
-| Defer | Promise only what you'll do | `Agree it should be paginated. Out of scope here; tracked in [TICKET].` |
-| Question | Answer it directly, then say if the code changes | `It's intentional: the cache is bypassed for admins so they see edits immediately. Added a comment so it's clear.` |
-| Nit | A word is enough | `Done.` or `Fair, left as is for consistency with the other files.` |
-| Unclear | Ask a narrow question | `Do you mean rename the variable, or change the type? Want to be sure I do the right thing.` |
-| Praise | Usually nothing, or a short thanks | `Thanks!` |
+| **Fixed.** | You agree and the change is made | What changed and the commit (see "Be specific about the change") |
+| **Not fixed.** | You are keeping the code as it is | Whether you agree or disagree, and the reason |
+| **Not fixed (follow-up).** | You agree, but not in this PR | Why it's out of scope and the ticket |
+| **Partly fixed.** | Some of it is done | What is done and what isn't, and why |
+| **No code change.** | A question that needed an answer, not an edit | The answer |
+
+Put agreement right after the opener when it isn't obvious: `Fixed. Agree, it let in limit + 1 requests...` or `Not fixed. Disagree: this matches how the other handlers do it (orders.js:40)...`. Use plain words ("Agree", "Disagree"), not a ritual phrase.
+
+If the comment is unclear, ask first: `Not fixed yet, need to check what you mean: do you want the variable renamed, or its type changed?`
+
+Examples:
+
+| Situation | Example |
+|---|---|
+| Fixed | `Fixed. Agree, the label came from the raw float. In `formatEstimate` it now comes from the difference rounded to cents. Test added for the empty list. Fixed in abc1234.` |
+| Fixed differently | `Fixed (differently). Used a lookup table instead of the if/else chain, since we'll add more cases next sprint. Done in abc1234.` |
+| Keep as is | `Not fixed. Disagree: it matches how the other handlers do it (see orders.js:40). Happy to change all of them in a separate PR if you'd like.` |
+| Defer | `Not fixed (follow-up). Agree it should be paginated, but it's out of scope here. Tracked in [TICKET].` |
+| Partly | `Partly fixed. The null check is in (abc1234). The retry cap isn't: it needs a config change, tracked in [TICKET].` |
+| Question | `No code change. It's intentional: the cache is bypassed for admins so they see edits immediately. Added a comment so it's clear.` |
+| Nit | `Fixed.` or `Not fixed. Left for consistency with the other files.` |
+| Praise | Usually nothing, or `Thanks!` |
+
+Never open with a compliment or a thank-you ("Good catch!", "Thanks for the review") in front of the status. Put it after, if at all, and only when meant.
 
 Keep replies short: one to three sentences for nits, questions and pushback. A reply that reports a **fix to a bug, security issue or other must-fix comment** may run to about five lines, because the reviewer needs to see what changed without opening the diff. Put identifiers in backticks. Don't repeat the reviewer's comment back to them.
 
@@ -60,7 +76,7 @@ Keep replies short: one to three sentences for nits, questions and pushback. A r
 
 Example (a reviewer found that a break-even case showed "additional cost: $0" because of float error):
 
-> Reproduced: `10000 * (1 + 13 / 100)` is `11299.999999999998`, so the raw difference was slightly negative.
+> Fixed. Reproduced: `10000 * (1 + 13 / 100)` is `11299.999999999998`, so the raw difference was slightly negative.
 > In `formatEstimate` the label now comes from the difference rounded to cents:
 > ```ts
 > const cents = Math.round(result.annualDifference * 100) / 100;
@@ -85,7 +101,7 @@ Avoid: "As I said", "Obviously", "That's not how it works", reflexive "Good catc
 
 ## Honesty rules
 
-- Never write "fixed" or "done" unless the change exists, in a commit you've seen or one the user tells you they made. If the fix isn't made yet, tell the user, and either draft the reply with a `[commit]` placeholder to fill in afterwards, or write "Will fix" only if they intend to.
+- Never open with **Fixed.** unless the change exists, in a commit you've seen or one the user tells you they made. If the fix isn't made yet, tell the user, and either draft the reply as **Fixed.** with a `[commit]` placeholder to fill in once it is, or, if they intend to do it later, open with **Not fixed yet.** ("Will fix in the next push"), so the reply never claims more than is true.
 - Never claim tests pass or CI is green unless you saw it. Use `[pass/fail]`.
 - **State only what the user told you or the code shows.** If the user says "fixed the header issue" but not how, don't write how. Don't add reasons or consequences the user didn't give ("a restart is acceptable for the incidents we saw", "the unbounded growth is gone now") even if they sound plausible; each one is a claim the reviewer may act on. When the user says something is fixed, get the details from the commit rather than leaving the reply vague. Only if there is no commit or diff you can read, ask the user for one line on what changed, or leave a placeholder like `[what changed]`. Don't fall back to a bare "Fixed" for a bug or must-fix comment.
 - Don't promise follow-up work the user hasn't agreed to do. Draft it as `[TICKET]` and flag it for them.
@@ -96,11 +112,13 @@ Avoid: "As I said", "Obviously", "That's not how it works", reflexive "Good catc
 After a round of fixes, a short top-level comment helps the reviewer see where things stand, and doubles as a re-request for review:
 
 ```
-Thanks for the review. Addressed everything except two points:
-- Pagination on /search: deferred to [TICKET].
+Thanks for the review. 5 of 7 comments fixed. Not fixed:
+- Pagination on /search: follow-up, tracked in [TICKET].
 - Naming of `ctx`: kept, matches the rest of the module (replied inline).
 Ready for another look.
 ```
+
+Lead with the count and which comments were not fixed, so the reviewer knows where to look.
 
 Skip it when the round had only one or two comments.
 
@@ -114,7 +132,8 @@ Skip it when the round had only one or two comments.
 ## Self-check before handing over
 
 - Is every comment that needed a reply covered, and is each reply tagged to its comment?
-- Does every "fixed" point to a real change?
+- Does every reply open with its status (Fixed / Not fixed / Partly fixed / No code change), so a skimmer can tell what was acted on?
+- Does every "Fixed" point to a real change?
 - Did I check the reviewer's claim against the code before agreeing or disagreeing?
 - Is each reply one to three sentences, with no defensiveness and no copy of their text?
 - Do disagreements give a reason about the code, not a preference?
