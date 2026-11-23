@@ -6,15 +6,21 @@ Short on purpose. Adapt the shape, not the words. Anything in `[brackets]` is fo
 
 **Title:** Fix crash in search when the query contains `&` or `%`
 
-> **What**
-> Escapes `%` and `_` in the search term and stops building the URL by string concatenation, so special characters no longer throw.
+> **Problem**
+> Searching for `salary%increase` or `React & TypeScript` returns a 500 and an error toast ([ticket]).
 >
-> **Why**
-> Searching for `salary%increase` returned a 500 ([ticket]).
+> **Cause**
+> The query was concatenated into the request URL without encoding, so `%` and `&` produced a malformed URL that the server rejects.
 >
-> **How to test**
-> Search `React & TypeScript` and `salary%increase`: results load, no error toast. An empty query still shows the empty state.
-> Regression test added in `search.test.js`: [pass/fail].
+> **Fix**
+> Build the request with `URLSearchParams`, which encodes the value. No change to how results are rendered.
+>
+> **How to verify**
+> Before: search `salary%increase` → 500. After: results load, no error toast. An empty query still shows the empty state.
+> Regression test `search.test.js › encodes special characters`: [pass/fail].
+>
+> **Notes**
+> `suggest.js` builds its URL the same way; left for a follow-up.
 
 ## Feature
 

@@ -58,6 +58,31 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 
 **If the PR spans many areas** (pages, services, packages): don't write one long paragraph. Group by area, one line per group, then the shared Why and How to test once. Length can grow with the number of groups, but each group stays one line.
 
+## Bug-fix PRs: use Cause / Fix instead
+
+A bug fix is judged on two questions: did you find the real cause, and does this change address that cause rather than hide the symptom? So replace What / Why with:
+
+```
+**Problem**
+<the symptom: what users or callers see, where, and when it happens; since when and how many are affected if the ticket says>
+
+**Cause**
+<the root cause, in one or two sentences: why the code behaves this way>
+
+**Fix**
+<what the change does and why that removes the cause; what you deliberately did not change>
+
+**How to verify**
+<repro steps with the expected result before and after; the regression test, by name>
+```
+
+Keep **Notes** for other places with the same cause, risks of the fix, or follow-ups.
+
+- **Never state a cause you haven't seen evidence for.** If the diff and ticket don't make the root cause clear, write `[confirm cause]` and tell the user, rather than inventing a plausible one. A wrong cause in a PR misleads everyone who reads it later.
+- **A fix that only suppresses the symptom** (a try/catch around the crash, a null default) should say so plainly and name the real cause as a follow-up, so the reviewer can decide whether that's acceptable.
+- Ask for or add a **regression test** line. If there isn't one, say why.
+- Same length rules apply: about 10–15 lines.
+
 ## What belongs, what doesn't
 
 Include:
@@ -86,7 +111,7 @@ Tell the user in the chat, separately from the description, and suggest fixing i
 
 | Kind | Lead with | Typically add |
 |---|---|---|
-| Bug fix | The symptom and cause in one line | A repro and the expected result; mention a regression test |
+| Bug fix | Use the Cause / Fix format above: problem, root cause, fix, how to verify | A repro with before/after results and the regression test by name |
 | Feature | What the user can now do | How to try it; flag or rollout notes |
 | Refactor | "No behaviour change" and how you know | Where to look for risk |
 | UI change | What changed visually | A list of the screenshots to attach, one per change, each with a name and what it should show (for example "pricing-mobile.png: new card, highlighted in a red box"); responsive/a11y notes if relevant |
