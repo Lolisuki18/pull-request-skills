@@ -28,7 +28,7 @@ The reviewer's question on every comment is "what did you do about this?". A goo
    - **Defer** to a follow-up (with a ticket or a promise you can keep)
    - **Ask** for clarification
 4. **Write one reply per comment**, plus an optional short summary for the review round (see below).
-5. **Self-check**, then hand over the drafts, each tagged with the comment it answers (`file:line` or a short quote), ready to paste.
+5. **Self-check**, then hand over the drafts, each tagged with the comment it answers (`file:line` or a short quote), ready to paste. Put the replies first. Add a short note for the user afterwards, **at most about four lines**, listing only what they must act on: placeholders to fill, promises they'd be making, and anything where the reviewer's claim and the code disagree.
 
 ## What a reply contains
 
@@ -63,6 +63,7 @@ Avoid: "As I said", "Obviously", "That's not how it works", reflexive "Good catc
 
 - Never write "fixed" or "done" unless the change exists, in a commit you've seen or one the user tells you they made. If the fix isn't made yet, tell the user, and either draft the reply with a `[commit]` placeholder to fill in afterwards, or write "Will fix" only if they intend to.
 - Never claim tests pass or CI is green unless you saw it. Use `[pass/fail]`.
+- **State only what the user told you or the code shows.** If the user says "fixed the header issue" but not how, don't write how. Don't add reasons or consequences the user didn't give ("a restart is acceptable for the incidents we saw", "the unbounded growth is gone now") even if they sound plausible; each one is a claim the reviewer may act on. Where a detail is missing, leave a placeholder like `[how it was fixed]`, or keep the reply to what you know ("Fixed in [commit]").
 - Don't promise follow-up work the user hasn't agreed to do. Draft it as `[TICKET]` and flag it for them.
 - If you are not sure the reviewer is right or wrong, say so to the user and draft a clarifying question instead of guessing.
 
