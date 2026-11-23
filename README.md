@@ -1,4 +1,4 @@
-# skill-code-review
+# pull-request-skills
 
 A small set of [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills) for the whole life of a pull request, written so the output reads like a thoughtful teammate wrote it: specific, short, labelled by weight, and honest about what was and wasn't checked.
 
@@ -60,11 +60,22 @@ foreach ($n in "pr-review-writer","pr-description-writer","review-reply-writer",
 ```
 
 **Project workspace (scoped to current repo):**
-Copy or junction the skill directories into your repository's `.agent/skills/` folder.
+Copy or junction the skill directories into your repository's `.agents/skills/` folder (older Antigravity versions used `.agent/skills/`). Antigravity paths are documented inconsistently (newer pages mention `~/.gemini/config/skills/`), so check its docs if the skills do not show up.
 
-### 3. Cursor & Other Agent Tools
+### 3. Cursor, Gemini CLI, Codex and others
 
-Link or copy the skill folders into your project workspace (e.g. `.cursor/rules/` or project skills directory). Edits in this repository are picked up immediately when using junctions or symlinks.
+Link or copy the skill folders into the agent's skills directory: Cursor `.cursor/skills/` (also reads `.claude/skills/`), Gemini CLI `.gemini/skills/` or `.agents/skills/`, Codex `.agents/skills/`. Paths change between versions, so confirm in your agent's docs. Edits in this repository are picked up immediately when using junctions or symlinks.
+
+For a one-command install of skills across agents, `dev-workflow-skills/scripts/install.py` also works on this repo's folders (`--target <dir>`).
+
+## Sibling repos
+
+| Repo | Covers |
+|---|---|
+| [`dev-workflow-skills`](https://github.com/Lolisuki18/dev-workflow-skills) | idea → plan → code → tests → audit, bug investigation. Its `dev-lifecycle` offers `pre-pr-self-review` and `pr-description-writer` from this repo at the end |
+| [`pull-request-skills`](https://github.com/Lolisuki18/pull-request-skills) (this one) | PR description, PR review, review replies, pre-PR self-review, code comments |
+| [`qa-workflow-skills`](https://github.com/Lolisuki18/qa-workflow-skills) | QA/STLC: test plan, test matrix, E2E, defects, summary report |
+| [`docs-workflow-skills`](https://github.com/Lolisuki18/docs-workflow-skills) | README, diagrams, API docs, ADRs, SDLC reports, Review 2 pack |
 
 ## How the skills are built
 
