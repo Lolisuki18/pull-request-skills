@@ -1,0 +1,19 @@
+{
+  "name": "pull-request-skills",
+  "version": "0.2.0",
+  "description": "Nine agent skills for the life of a pull request: commit messages, PR descriptions, self-review, reviews, replies, CI triage, merge conflicts, PR splitting and code comments.",
+  "author": {
+    "name": "Lolisuki18",
+    "url": "https://github.com/Lolisuki18"
+  },
+  "homepage": "https://github.com/Lolisuki18/pull-request-skills",
+  "repository": "https://github.com/Lolisuki18/pull-request-skills",
+  "license": "MIT",
+  "keywords": [
+    "pull-request",
+    "code-review",
+    "git",
+    "commit"
+  ],
+  "skills": "."
+}
