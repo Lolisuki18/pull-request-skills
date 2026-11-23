@@ -16,9 +16,19 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
    - Intent: a linked issue, ticket, brief or spec if the user mentions one (read it; it is usually where the *why* lives), and the commit messages.
    - Conventions: a PR template (`.github/pull_request_template.md` or similar) and the style of recent merged PR titles (`gh pr list --state merged -L 5`). If a template exists, follow it (see "If the repo has a PR template" below).
 2. **Decide the one-sentence "what" and "why" first.** If you can't, you don't understand the change yet; read more or ask one short question. Never invent a motivation to fill the slot.
-3. **Write** using the format below.
-4. **Mark unknowns** with `[brackets]` for the user to fill (issue number, test results, screenshots). Do not guess them.
-5. **Self-check** against the list at the end, then hand over the title and body ready to paste.
+3. **Take inventory of what needs verifying.** Before writing "How to test", list every behaviour the change introduces, from the diff, the new tests and the ticket or brief, grouped like this:
+   - main path (happy path)
+   - each validation rule and error message
+   - edge cases and boundaries
+   - state changes (reset, changing a selection, disabled or locked fields, retry)
+   - accessibility (focus, aria attributes, screen reader announcements)
+   - responsive or device behaviour
+   - other pages or content touched (FAQ, docs, emails)
+
+   Skip groups that don't apply. If the ticket or brief already has an acceptance table, use its cases rather than inventing your own. Note which behaviours already have automated tests (and in which file) and which need a person to click through.
+4. **Write** using the format below.
+5. **Mark unknowns** with `[brackets]` for the user to fill (issue number, test results, screenshots). Do not guess them.
+6. **Self-check** against the list at the end, then hand over the title and body ready to paste.
 
 ## Format
 
@@ -34,13 +44,13 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 <1–2 sentences: the problem, ticket, incident or decision behind it>
 
 **How to test**
-<exact steps, or 2–3 representative cases with expected results; a link to the full test list is fine>
+<one line per group of behaviour from your inventory, each with a concrete value or two and the expected result. Say which groups are covered by automated tests (file name) and which need a manual check. Link the brief or test file for the full list.>
 
 **Notes**
 <only if real: risk, deploy ordering, feature flag, breaking change, deliberately out of scope, follow-ups>
 ```
 
-**Length**: a typical PR fits in about 15 lines. A one-line fix needs two to four. Go longer only for something genuinely risky (migration, public API change, security), and then put the risk first, not last.
+**Length**: a typical PR fits in about 15 lines. A one-line fix needs two to four. Go longer only for something genuinely risky (migration, public API change, security), and then put the risk first, not last. **How to test** is the one place where length may grow, by adding one line per group of behaviour, never by pasting long tables. Don't shorten it by dropping groups: a reviewer who follows an incomplete test list will miss the rest.
 
 **If the repo has a PR template**: keep its headings, field order and checklist exactly as they are, and write the content inside the matching section (usually the description). Put What / Why / How to test in that section, not around it. Fill ticket-ID fields from what you read, or leave a `[placeholder]`. Don't tick checklist boxes: ticking says "I did this", and you haven't verified it; tell the user which boxes they can tick once they've done the thing.
 
@@ -53,14 +63,14 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 Include:
 - The effect on users or callers, in words the reviewer can verify.
 - Anything surprising: a behaviour change inside a "refactor", a new dependency, a migration, a flag.
-- A concrete way to check it works: inputs and expected outputs, not "test it".
+- A concrete way to check it works, covering every group of behaviour the change adds: inputs and expected outputs, not "test it", and not just two or three convenient examples.
 - `Closes #123` or the ticket link when you have one.
 - One line pointing at a genuinely subtle spot ("the retry cap in `deliver()` is the part I'm least sure about") when there is one. Skip it otherwise.
 
 Leave out:
 - A list of changed files or a walk through the diff. The reviewer sees it.
 - The story of how you got there, and "I also tidied some things" without saying what.
-- Large result tables that already live in the ticket or brief. Give two or three cases and link the rest.
+- Large result tables that already live in the ticket or brief. Summarise each group in one line with a value or two, and link the brief or the test file for the full list.
 - Empty boilerplate sections ("N/A", "None").
 - Claims you can't back: "tested thoroughly", "no regressions", "works on my machine".
 
@@ -87,6 +97,8 @@ Tell the user in the chat, separately from the description, and suggest fixing i
 ## Self-check before handing over
 
 - Can a reviewer who reads only the title and the first two lines tell what this PR does and why?
+- Does every new rule, error message and state in the diff appear in **How to test**, or in a named automated test?
+- Is it clear which checks are automated and which the reviewer must do by hand?
 - Is every claim something you read in this session or marked as a placeholder?
 - Is anything in there that the diff or the ticket already shows better? Cut it.
 - Did you keep what a reviewer worries about when something is removed or changed (what was left untouched)?

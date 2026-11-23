@@ -42,6 +42,17 @@ Short on purpose. Adapt the shape, not the words. Anything in `[brackets]` is fo
 > **Notes**
 > The helper is also used by the billing client now, so that's where I'd look for surprises.
 
+## Many behaviours to verify (one line per group)
+
+**Title:** Replace offshore salary and adjustment with one editable outsourcing cost per role
+
+> **How to test**
+> - Calculation: the 7 acceptance cases from the brief, e.g. 1/1 roles at `22000` → $65,500 savings; 1/5 at `22000` → $22,500 additional cost; 1/0 blank → N/A. Automated in `calculator.test.ts`: [pass/fail].
+> - Amount format: `22000`, `22,000`, `A$22,000.50` accepted; blank, `0`, `22,00`, `22.555` show the field error and no results.
+> - Counts and overhead: both roles 0, blank or fractional role count, overhead 101, missing salary.
+> - Behaviour: focus moves to the first invalid field, errors clear on edit, changing Role Type keeps the entered cost, Retry clears everything, the cost field is locked when outsourced roles = 0.
+> - Manual only: FAQ answer on `/faqs`, mobile at 375px, screen reader announcement of the result.
+
 ## Config change with real risk (risk first)
 
 **Title:** Drop the `legacy_id` column from `orders`
