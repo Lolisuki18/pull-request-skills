@@ -1,0 +1,9 @@
+diff --git a/src/invoice.py b/src/invoice.py
+--- a/src/invoice.py
++++ b/src/invoice.py
+@@ -1,4 +1,4 @@
+ def invoice_total(items):
+-    total = sum(i["price"] * i["qty"] for i in items)
+-    return round(total, 2)
++    # round each line first so the printed lines add up to the total
++    return sum(round(i["price"] * i["qty"], 2) for i in items)
