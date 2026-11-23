@@ -115,7 +115,18 @@ Link or copy the skill folders into the agent's skills directory: Cursor `.curso
 
 Read these numbers with care: one run per configuration, graded by the same model that ran the tests, and the later cases have no headroom left. The gap comes mostly from conventions the skill defines (comment order, labels, length), not from finding more bugs. Tone and "sounds human" are not scored; read the outputs in [`samples/`](samples).
 
-Eval cases (one per skill, same format, graded by LLM graders; not yet run) exist for `commit-message-writer`, `ci-failure-triager`, `merge-conflict-resolver` and `pr-splitter`: each scaffolds a real git repo or log files with `place-files.sh`. Additional test suites have also been configured for `pr-description-writer/evals/` (verifying Cause/Fix format enforcement) and `review-reply-writer/evals/` (testing specific change attribution and tone calibration).
+Eval cases (one per skill, same format, graded by LLM graders) exist for `commit-message-writer`, `ci-failure-triager`, `merge-conflict-resolver` and `pr-splitter`: each scaffolds a real git repo or log files with `place-files.sh`. Additional test suites have also been configured for `pr-description-writer/evals/` (verifying Cause/Fix format enforcement) and `review-reply-writer/evals/` (testing specific change attribution and tone calibration).
+
+### Results of the four newest skills (2026-11-23)
+
+One run each by a Claude subagent that was given only the `SKILL.md` and the user request, graded by the same model family against the case's graders. This is a behaviour smoke test: triggering was not tested, and there is one run per case.
+
+| Skill | Case | Result |
+|---|---|---|
+| `commit-message-writer` | mixed-staged-change-gets-split-and-follows-convention | 7/7 |
+| `ci-failure-triager` | first-real-failure-classified-from-log | 7/7 on the re-run. The first run found that the log and diff of the fixture disagreed (the skill noticed it); the fixture was fixed. |
+| `merge-conflict-resolver` | keeps-both-intents-and-leaves-commit-to-user | 7/7 |
+| `pr-splitter` | splits-mixed-branch-into-ordered-stack-without-rewriting | 7/7 |
 
 ## Validation
 
