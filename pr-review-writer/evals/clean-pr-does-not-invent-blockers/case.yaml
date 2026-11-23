@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: clean-pr-does-not-invent-blockers
+expected_outcome: |
+  The PR is well made. The review approves (or approves with minor comments), contains no blocking comments, gives at least one specific piece of real praise, and is honest about what it did not run.
+context:
+  scaffold_script: place-files.sh

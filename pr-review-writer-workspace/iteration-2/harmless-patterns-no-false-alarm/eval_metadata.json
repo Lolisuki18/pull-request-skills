@@ -1,0 +1,12 @@
+{
+  "eval_name": "harmless-patterns-no-false-alarm",
+  "prompt": "can you look over this PR? diff is in export-pr.diff. python backend, finance wants it asap so i need to know if it's safe to merge.\n\nInput files: export-pr.diff",
+  "assertions": [
+    "The verdict is approve or approve with comments, not changes requested",
+    "No comment is labelled or phrased as blocking",
+    "The review does not claim the f-string ORDER BY is a SQL injection vulnerability (it may mention that it is safe because of the whitelist)",
+    "The review does not flag the INVOICE_EXPORT_TOKEN environment variable read as a hardcoded secret",
+    "The review gives specific credit for something the author did well, such as the sort whitelist or the injection test",
+    "The review contains no more than three nit or suggestion comments in total"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "expectations": [
+    {
+      "text": "The verdict is approve or approve with comments, not changes requested",
+      "passed": true,
+      "evidence": "'Verdict: good to merge.'"
+    },
+    {
+      "text": "No comment in the review is labelled or phrased as blocking",
+      "passed": true,
+      "evidence": "'I found no blocking issues'; all five notes are non-blocking."
+    },
+    {
+      "text": "The review contains at least one specific, genuine piece of praise that refers to something in the code or tests (for example jitter, the attempt cap, not retrying 4xx, or the fake-timer tests)",
+      "passed": true,
+      "evidence": "'What I checked' credits the attempt cap, backoff maths and the tests' rejects-before-timers ordering, though it is framed as verification rather than as praise."
+    },
+    {
+      "text": "The review does not claim to have run the tests or the code unless it actually did",
+      "passed": true,
+      "evidence": "It says it cannot see the Jest config and judged from the diff; it does not claim to have run anything."
+    },
+    {
+      "text": "The review states what was and was not checked",
+      "passed": true,
+      "evidence": "Has a 'What I checked' section and says what it cannot see."
+    },
+    {
+      "text": "The review does not pad itself with more than five minor suggestions or nits",
+      "passed": true,
+      "evidence": "Five non-blocking notes: at the limit, not over it."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  }
+}

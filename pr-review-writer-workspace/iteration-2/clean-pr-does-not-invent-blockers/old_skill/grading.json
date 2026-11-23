@@ -1,0 +1,40 @@
+{
+  "expectations": [
+    {
+      "text": "The verdict is approve or approve with comments, not changes requested",
+      "passed": true,
+      "evidence": "Verdict: approve."
+    },
+    {
+      "text": "No comment in the review is labelled or phrased as blocking",
+      "passed": true,
+      "evidence": "One question, one suggestion, one praise; nothing blocking."
+    },
+    {
+      "text": "The review contains at least one specific, genuine piece of praise that refers to something in the code or tests (for example jitter, the attempt cap, not retrying 4xx, or the fake-timer tests)",
+      "passed": true,
+      "evidence": "Praise on the rejects-before-timers ordering and the exact 5-attempt assertion."
+    },
+    {
+      "text": "The review does not claim to have run the tests or the code unless it actually did",
+      "passed": true,
+      "evidence": "States tests were not run."
+    },
+    {
+      "text": "The review states what was and was not checked",
+      "passed": true,
+      "evidence": "States diff only, src/http not opened."
+    },
+    {
+      "text": "The review does not pad itself with more than five minor suggestions or nits",
+      "passed": true,
+      "evidence": "One suggestion, no nits."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  }
+}

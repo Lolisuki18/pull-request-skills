@@ -1,0 +1,75 @@
+PR title: Cap webhook retries at 5 with exponential backoff
+PR description:
+What: webhook deliveries now retry on network errors, timeouts, 429 and 5xx, up to 5 attempts with exponential backoff + jitter. 4xx other than 429 are not retried.
+Why: during the brief billing-api outage last week deliveries failed silently and we had no retry at all (INC-212).
+How to test: `npm test -- deliver` (new unit tests with fake timers). Manually: point an endpoint at `scripts/flaky-server.js` and watch the logs.
+Scope: only src/webhooks/deliver.js, no change to the public deliver() signature.
+
+diff --git a/src/webhooks/deliver.js b/src/webhooks/deliver.js
+--- a/src/webhooks/deliver.js
++++ b/src/webhooks/deliver.js
+@@ -1,6 +1,31 @@
+ const http = require('../http');
+
++const MAX_ATTEMPTS = 5;
++const BASE_DELAY_MS = 200;
++
++const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
++
+ async function deliver(event, endpoint) {
+-  return http.post(endpoint.url, event);
++  let lastError;
++  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
++    try {
++      return await http.post(endpoint.url, event, { timeout: 5000 });
++    } catch (err) {
++      lastError = err;
++      if (!isRetryable(err) || attempt === MAX_ATTEMPTS) break;
++      const jitter = Math.random() * BASE_DELAY_MS;
++      await sleep(BASE_DELAY_MS * 2 ** (attempt - 1) + jitter);
++    }
++  }
++  throw lastError;
++}
++
++function isRetryable(err) {
++  if (!err.response) return true; // network error or timeout
++  const status = err.response.status;
++  return status === 429 || status >= 500;
+ }
+
+ module.exports = { deliver };
+diff --git a/test/webhooks/deliver.test.js b/test/webhooks/deliver.test.js
+--- /dev/null
++++ b/test/webhooks/deliver.test.js
+@@ -0,0 +1,38 @@
++jest.useFakeTimers();
++const http = require('../../src/http');
++const { deliver } = require('../../src/webhooks/deliver');
++
++jest.mock('../../src/http');
++
++const err = (status) => Object.assign(new Error('x'), { response: status ? { status } : undefined });
++
++test('retries a 503 and then succeeds', async () => {
++  http.post.mockRejectedValueOnce(err(503)).mockResolvedValueOnce({ ok: true });
++  const p = deliver({ id: 1 }, { url: 'http://x' });
++  await jest.runAllTimersAsync();
++  await expect(p).resolves.toEqual({ ok: true });
++  expect(http.post).toHaveBeenCalledTimes(2);
++});
++
++test('does not retry a 400', async () => {
++  http.post.mockRejectedValueOnce(err(400));
++  await expect(deliver({ id: 1 }, { url: 'http://x' })).rejects.toThrow();
++  expect(http.post).toHaveBeenCalledTimes(1);
++});
++
++test('gives up after 5 attempts', async () => {
++  http.post.mockRejectedValue(err(500));
++  const p = deliver({ id: 1 }, { url: 'http://x' });
++  const assertion = expect(p).rejects.toThrow();
++  await jest.runAllTimersAsync();
++  await assertion;
++  expect(http.post).toHaveBeenCalledTimes(5);
++});

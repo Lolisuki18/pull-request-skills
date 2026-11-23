@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: rewrites-harsh-comment
+expected_outcome: |
+  A rewritten comment that keeps the N+1 point, explains the consequence, suggests a concrete fix (batch/join/IN), is labelled by weight, talks about the code rather than the person, and is short. Shows before and after briefly.

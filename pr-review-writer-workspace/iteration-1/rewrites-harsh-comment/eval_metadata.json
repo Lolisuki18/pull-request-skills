@@ -1,0 +1,12 @@
+{
+  "eval_name": "rewrites-harsh-comment",
+  "prompt": "i left this comment on a coworker's PR and he went quiet on me. can you make it better? keep my point though.\n\n\"This is wrong. Why would you query inside a loop?? Everyone knows that's an N+1. Rewrite it.\"\n\nthe code is a for loop over orders that calls db.query('SELECT * FROM items WHERE order_id = ' + order.id) each time",
+  "assertions": [
+    "The rewritten comment keeps the original technical point that querying inside a loop causes an N+1 problem",
+    "The rewritten comment explains a concrete consequence (many round trips, latency, load on the database)",
+    "The rewritten comment suggests a concrete alternative such as a join, an IN query or batching",
+    "The rewritten comment talks about the code and does not address the author personally in a critical way",
+    "The rewritten comment starts with or clearly includes a weight label or equivalent explicit statement of how serious it is",
+    "The rewritten comment itself is no more than about five sentences"
+  ]
+}

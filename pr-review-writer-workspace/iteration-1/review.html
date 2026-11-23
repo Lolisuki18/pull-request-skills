@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "pr-review-writer", "runs": [{"id": "clean-pr-does-not-invent-blockers-with_skill", "prompt": "review this PR please, diff in clean-pr.diff. just want to know if it's good to merge.\n\nInput files: clean-pr.diff", "eval_id": null, "outputs": [{"name": "review.md", "type": "text", "content": "Note for you, not the author: line numbers are against the new side of the diff and are approximate. I judged from the diff alone. `../http`, the callers of `deliver()` and the jest config weren't available, and I haven't run the tests. Nothing has been posted.\n\n## Summary\n\nThis adds retries to `deliver()`. It makes up to 5 attempts with exponential backoff plus jitter on network errors, timeouts, 429 and 5xx, and gives up straight away on other 4xx. The public signature is unchanged. It matches the description and INC-212, and I don't see anything blocking.\n\nVerdict: approve\n\nI read the retry loop and the three new tests. The three inline questions are about code outside the diff, and none of them should hold up the merge. I didn't run the suite or try `scripts/flaky-server.js`.\n\n## Inline comments\n\n`src/webhooks/deliver.js:8`\nquestion: with a 5s timeout per attempt, the worst case is now about 25s of timeouts plus roughly 3s of backoff before `deliver()` rejects. Is it called from a queue/worker, or inline in a request path? If it's the latter, that latency might matter. No change needed if it's already async.\n\n`src/webhooks/deliver.js:12`\nquestion: this relies on `http.post` honoring `{ timeout }` and rejecting non-2xx responses with an `err.response.status`. I can't see `../http` from here, so can you confirm that's its contract? If it resolves on 4xx/5xx instead, `isRetryable` would never see them.\n\n`src/webhooks/deliver.js:23`\npraise: pulling the retry decision into `isRetryable` makes the policy easy to read and change later. Not retrying non-429 4xx is the right default, since retrying a 400 can't succeed. Re-throwing the last error also keeps the original failure for callers.\n\n`test/webhooks/deliver.test.js:20`\nquestion: the call-count assertions here (`toHaveBeenCalledTimes(1)` after the earlier test already called `http.post` twice) only hold if mocks are cleared between tests. Is `clearMocks`/`resetMocks` set in the jest config? If not, an `afterEach(() => jest.clearAllMocks())` would make it explicit. I'm guessing CI would catch this, so low priority.\n\n`test/webhooks/deliver.test.js:9`\npraise: the three tests cover the cases that matter: retry then success, no retry on a 400, and giving up after exactly 5 attempts. Using fake timers keeps them fast. Starting the `rejects` assertion before `runAllTimersAsync()` in the last test avoids an unhandled-rejection warning.\n"}], "grading": {"expectations": [{"text": "The verdict is approve or approve with comments, not changes requested", "passed": true, "evidence": "'Verdict: approve'."}, {"text": "No comment in the review is labelled or phrased as blocking", "passed": true, "evidence": "No blocking comments; three questions and two praise comments."}, {"text": "The review contains at least one specific, genuine piece of praise that refers to something in the code or tests (for example jitter, the attempt cap, not retrying 4xx, or the fake-timer tests)", "passed": true, "evidence": "Praise on isRetryable and not retrying non-429 4xx; praise on the three tests and the rejects-before-timers ordering."}, {"text": "The review does not claim to have run the tests or the code unless it actually did", "passed": true, "evidence": "Header note and summary both say it did not run the tests or scripts/flaky-server.js."}, {"text": "The review states what was and was not checked", "passed": true, "evidence": "Header note and summary list what was read and what was not available (../http, callers, jest config)."}, {"text": "The review does not pad itself with more than five minor suggestions or nits", "passed": true, "evidence": "Zero nits and zero suggestions; three questions."}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}}}, {"id": "clean-pr-does-not-invent-blockers-without_skill", "prompt": "review this PR please, diff in clean-pr.diff. just want to know if it's good to merge.\n\nInput files: clean-pr.diff", "eval_id": null, "outputs": [{"name": "review.md", "type": "text", "content": "# Review: Cap webhook retries at 5 with exponential backoff\n\n**Verdict: good to merge.** I found no blocking issues. The change does what the description says, it stays in scope, and the tests cover the three behaviors that matter. The notes below are optional. One of them, the mock-reset question, is worth a quick look at CI before you merge.\n\n## What I checked\n\n- **Retry loop:** It makes at most 5 attempts. The last attempt, or a non-retryable error, breaks out and rethrows the last error. On success it returns immediately. The loop has no off-by-one problem.\n- **Backoff:** The delay is `200 * 2^(attempt-1)` plus up to 200 ms of jitter, so the waits are about 200, 400, 800 and 1600 ms. There is no sleep after the final attempt. Because of the `attempt === MAX_ATTEMPTS` check, the code never sleeps and then gives up.\n- **Retry policy:** It matches the description. A response-less error (network failure or timeout), 429 and 5xx are retried. Other 4xx are not.\n- **Scope:** The only source file changed is `src/webhooks/deliver.js`, and the `deliver(event, endpoint)` signature is unchanged. Success behavior is the same. Failure still throws the original error, so callers see the same error type.\n- **Tests:** They cover retry-then-succeed (503), no retry on 400, and giving up after exactly 5 attempts. They use fake timers and attach the `rejects` assertion before running the timers, which avoids an unhandled-rejection race.\n\n## Non-blocking notes\n\n1. **Confirm the mock call counts reset between tests.**\n   - `http.post` is automocked, and the tests assert `toHaveBeenCalledTimes(2)`, `(1)` and `(5)` in sequence.\n   - Those counts only hold if Jest is configured with `clearMocks`, `resetMocks` or `restoreMocks`. Otherwise the calls accumulate across tests (2, then 3, then 8).\n   - I can't see the Jest config from the diff. If CI is green, this is fine. If not, add `beforeEach(() => jest.clearAllMocks())`. Adding it anyway costs one line and removes the dependency on config.\n2. **`{ timeout: 5000 }` is new behavior.**\n   - The PR adds a 5 s per-request timeout. The description doesn't mention it, and I can't tell from the diff whether `http.post` honors a third options argument.\n   - Please confirm `../http` supports `timeout` in that position. If it silently ignores it, the \"timeout\" retry path never triggers.\n   - It would also be worth adding a line about it to the PR description.\n3. **Worst-case latency of `deliver()`.**\n   - A fully failing endpoint can now take about 5 \u00c3\u2014 5 s of timeouts plus about 3 s of backoff, so roughly 28 s per call.\n   - If any caller awaits `deliver()` inline, such as in a request handler, that is a visible change. If callers run it from a queue or worker, ignore this.\n4. **Retries can produce duplicate deliveries.** A timeout doesn't mean the receiver didn't process the event. This is inherent to at-least-once retry. It's fine as long as the event carries a stable id that receivers can use to dedupe. `event.id` seems to exist, so a one-line doc or comment about at-least-once semantics would help.\n5. **Any error without `err.response` is retried,** including programmer errors such as a serialization `TypeError` thrown before the request. These would be retried 5 times and fail identically, which wastes about 3 s but is harmless. Narrowing to known network or timeout error codes is possible, but I wouldn't hold the PR for it.\n\n## Summary\n\nThe logic is correct and the scope is tight, and it addresses the INC-212 failure mode. Before merging, check that CI is green (note 1) and that `http.post` accepts `timeout` (note 2). Everything else is optional.\n"}], "grading": {"expectations": [{"text": "The verdict is approve or approve with comments, not changes requested", "passed": true, "evidence": "'Verdict: good to merge.'"}, {"text": "No comment in the review is labelled or phrased as blocking", "passed": true, "evidence": "'I found no blocking issues'; all five notes are non-blocking."}, {"text": "The review contains at least one specific, genuine piece of praise that refers to something in the code or tests (for example jitter, the attempt cap, not retrying 4xx, or the fake-timer tests)", "passed": true, "evidence": "'What I checked' credits the attempt cap, backoff maths and the tests' rejects-before-timers ordering, though it is framed as verification rather than as praise."}, {"text": "The review does not claim to have run the tests or the code unless it actually did", "passed": true, "evidence": "It says it cannot see the Jest config and judged from the diff; it does not claim to have run anything."}, {"text": "The review states what was and was not checked", "passed": true, "evidence": "Has a 'What I checked' section and says what it cannot see."}, {"text": "The review does not pad itself with more than five minor suggestions or nits", "passed": true, "evidence": "Five non-blocking notes: at the limit, not over it."}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}}}, {"id": "flags-sqli-secret-and-bugs-with_skill", "prompt": "can you review this PR for me? the diff is in sample-pr.diff. I'm about to approve it but I want a second pair of eyes first.\n\nInput files: sample-pr.diff", "eval_id": null, "outputs": [{"name": "review.md", "type": "text", "content": "Note for you (not part of the review): I'd hold off on approving, there are four blocking issues. Line numbers are approximate, counted from the added lines in the diff because the hunk header doesn't match the content. I only had the diff, not the repo, so I couldn't check how `db.query` is implemented or whether auth middleware sits in front of this router.\n\n## Summary\nAdds `GET /users/search` so support can look users up by name, plus one test. The endpoint does what the description says in the happy case, but I'd want four things fixed before it merges: the SQL injection in the name filter, the live-looking admin token committed in the file, the loop that runs one past the end of `rows` (it throws on every request, including empty results), and the full result set being logged. Details are inline. I read the whole diff but didn't run the code or the test suite.\n\nVerdict: changes requested\n\n## Inline comments\n`src/routes/users.js:4`\nblocking: this commits what looks like a live admin token (`adm-live-...`). Even if we delete the line in a follow-up commit it stays in git history, so the token needs rotating regardless. It's also unused in this diff, so the simplest fix is to drop it; if something does need it, read it from an env var / the secrets manager.\n\n`src/routes/users.js:7`\nquestion: is this router mounted behind auth / a support-role check? I can't see the mounting from the diff, and the description doesn't mention it. If it's open to any caller, this exposes the whole user table by name search.\n\n`src/routes/users.js:9`\nblocking: `q` goes straight into the SQL string, so `?name=' OR '1'='1` returns every user, and something like a UNION payload could read other tables. Please use a parameterised query, e.g. `db.query(\"SELECT ... FROM users WHERE name LIKE ?\", [`%${q}%`])` (placeholder syntax depends on the driver).\n\n`src/routes/users.js:9`\nsuggestion: `SELECT *` on `users` sends every column back to the client. If the table holds anything like password hashes, reset tokens or internal flags, they'd end up in the response. Listing the columns support actually needs would be safer and make the response shape explicit.\n\n`src/routes/users.js:11`\nblocking: `i \u003c= rows.length` runs one iteration too many, so `rows[i]` is `undefined` on the last pass and `rows[i].id` throws. That also means an empty result (`rows.length === 0`) throws on the first iteration, so the endpoint never returns successfully. Should be `i \u003c rows.length`.\n\n`src/routes/users.js:12`\nsuggestion: this is one profile query per user, i.e. N+1, and with no limit on the first query a broad search like `name=a` fans out into hundreds of round trips. A single `WHERE user_id IN (...)` (or a JOIN) plus a `LIMIT` on the search would fix both. The `rows[i].id` concatenation here should become a parameter too, even though the value comes from the DB.\n\n`src/routes/users.js:14`\nblocking: this logs the full result set, which is user rows plus profiles, so PII ends up in the log store on every search. Please remove it, or log only the query term and the result count.\n\n`test/users.test.js:11`\nsuggestion: the test only checks for a 200, so it wouldn't catch wrong or leaked data. It'd be worth asserting on the body, and adding a no-match case (which is where the loop bug above shows up) and one with a quote character in `name`.\n\n`test/users.test.js:11`\nquestion: did this test pass for you? With the loop as written I'd expect the handler to throw even for `name=bob`, unless `db` is mocked in a way I can't see from here.\n"}], "grading": {"expectations": [{"text": "The review has inline comments anchored to specific files and lines, and a separate summary that includes a verdict", "passed": true, "evidence": "Summary section with 'Verdict: changes requested' plus 9 inline comments each headed by file:line."}, {"text": "The review flags the SQL injection in the search query as a blocking problem and suggests a parameterised query", "passed": true, "evidence": "L9 'blocking:' comment shows ?name=' OR '1'='1 and a parameterised query suggestion."}, {"text": "The review flags the committed admin token as blocking and says it must be rotated, not just removed", "passed": true, "evidence": "L4 'blocking:' says it stays in git history so the token needs rotating regardless."}, {"text": "The review identifies the loop condition `i \u003c= rows.length` as an off-by-one bug that reads past the end of the array", "passed": true, "evidence": "L11 'blocking:' explains i \u003c= rows.length reads rows[rows.length] and throws, even for empty results."}, {"text": "The review flags logging the full search result (personal data) as a problem", "passed": true, "evidence": "L14 'blocking:' says full result set (user rows + profiles) puts PII in the log store."}, {"text": "The verdict is changes requested (not approve)", "passed": true, "evidence": "'Verdict: changes requested'."}, {"text": "Every inline comment starts with a weight label such as blocking, suggestion, nit, question or praise", "passed": true, "evidence": "All 9 inline comments start with blocking:/question:/suggestion:."}, {"text": "No inline comment addresses the author as the cause of a problem (for example 'you forgot', 'you should have'); comments talk about the code", "passed": true, "evidence": "Comments refer to 'this', 'q', 'the handler'; the test comment asks 'did this test pass for you?' which is a question, not blame."}, {"text": "The summary is no longer than about 8 lines", "passed": true, "evidence": "Summary is one paragraph of about 6 sentences (roughly 7 lines)."}, {"text": "The inline comments are ordered by file and then by line number", "passed": true, "evidence": "Order is L4, L7, L9, L9, L11, L12, L14, then test file L11, L11."}], "summary": {"passed": 10, "failed": 0, "total": 10, "pass_rate": 1.0}}}, {"id": "flags-sqli-secret-and-bugs-without_skill", "prompt": "can you review this PR for me? the diff is in sample-pr.diff. I'm about to approve it but I want a second pair of eyes first.\n\nInput files: sample-pr.diff", "eval_id": null, "outputs": [{"name": "review.md", "type": "text", "content": "# Review: \"Add user search endpoint\"\n\n**Recommendation: Do not approve. Request changes.** The PR has a SQL injection, a hardcoded credential, and a crash on every successful search that returns results. These are blockers, not nits.\n\nJudged from the diff only (repo not available).\n\n## Blocking issues\n\n### 1. SQL injection in the search query (`src/routes/users.js`, line 16)\n```js\ndb.query(\"SELECT * FROM users WHERE name LIKE '%\" + q + \"%'\")\n```\n`req.query.name` goes straight into the SQL string. Anyone who can call this endpoint can read or modify the database (`' OR 1=1 --`, UNION-based extraction, stacked queries if the driver allows them). The same pattern appears in line 19 (`\"... WHERE user_id = \" + rows[i].id`). `id` comes from the DB so it is lower risk, but it is still string concatenation and should be parameterized too.\n\nFix: use parameterized queries, e.g. `db.query(\"SELECT * FROM users WHERE name LIKE ?\", ['%' + q + '%'])` (use `$1` placeholders for pg). Also escape or handle `%` and `_` in user input if literal matching matters. Validate that `q` is a non-empty string (`req.query.name` can also be an array or object with Express's query parser).\n\n### 2. Hardcoded secret committed (line 11)\n```js\nconst ADMIN_TOKEN = \"adm-live-9f8e7d6c5b\";\n```\nThis looks like a live admin token, and it is committed to source control. It is also unused in the diff. Treat it as compromised: rotate it now, even if this PR is not merged, because it is already in the PR/branch history. Remove it from the code and load secrets from environment or a secret manager. Check whether the same token is used elsewhere and consider scrubbing history.\n\n### 3. Off-by-one bug: loop crashes whenever there are results (line 18)\n```js\nfor (let i = 0; i \u003c= rows.length; i++) {\n  ... rows[i].id\n```\n`\u003c=` runs one iteration past the end, so `rows[i]` is `undefined` and `rows[i].id` throws a TypeError. Every search that returns at least one row will fail. With zero rows, `rows[0]` is also undefined, so it crashes then too. The endpoint will effectively always fail (unhandled rejection in an async Express handler, depending on the Express version: a hung request or a 500). Use `i \u003c rows.length`.\n\n### 4. No authorization or authentication visible\nThe endpoint returns `SELECT *` for users from a table that likely includes sensitive columns (email, password hash, etc.), and the description says it is for support. Nothing in the diff restricts it to support/admin users. Confirm the router is mounted behind auth middleware with role checks. If so, state it in the PR; if not, add it.\n\n## Other issues (should fix)\n\n### 5. `SELECT *` leaks fields\nBoth queries use `SELECT *`. Select only the columns support needs. Returning password hashes, tokens, or internal flags to the client would be a data leak.\n\n### 6. N+1 queries\nOne extra query per user inside a loop with sequential `await`. Use a single JOIN, or one `WHERE user_id IN (...)` query and map the results. There is also no `LIMIT`, so a short search term like `a` returns and processes a large part of the table. Add a limit and pagination, and possibly a minimum query length.\n\n### 7. Logging full results (line 22)\n```js\nconsole.log(\"search result\", JSON.stringify(data));\n```\nThis writes PII (and possibly sensitive profile data) to the logs on every search. Remove it, or log only the count and a request id.\n\n### 8. No error handling\nThere is no try/catch around the awaits. In Express 4, a rejected promise in an async handler is not passed to the error handler, so the request hangs and may produce an unhandled rejection. Wrap it or use an async wrapper / `next(err)`.\n\n### 9. Leaky wildcard and missing input validation\n`q` undefined yields `%undefined%` after concatenation. Validate presence, type, and length, and return 400 otherwise.\n\n## Tests (`test/users.test.js`)\nThe added test only checks `status === 200` for `?name=bob`. It would not catch:\n- the off-by-one crash (unless the test DB has a \"bob\" row, and if it does, the test should currently fail with the crash; verify CI actually ran and passed this, because as written I would expect a failure or a hang);\n- injection;\n- the response shape or content;\n- the empty-result and missing-param cases;\n- authorization.\n\nSuggested tests: results include the matching user and profile; no match returns `[]` with 200; missing/invalid `name` returns 400; a payload like `' OR '1'='1` does not return all users; unauthorized caller gets 401/403.\n\n## Minor\n- The PR description says nothing about auth, data exposure, or performance. Worth adding.\n- The `// search users` comment is fine but the route would be clearer split into a handler/service layer.\n\n## Summary\n| # | Severity | Issue |\n|---|----------|-------|\n| 1 | Blocker | SQL injection (lines 16, 19) |\n| 2 | Blocker | Hardcoded live admin token; rotate |\n| 3 | Blocker | `\u003c=` off-by-one throws on every request |\n| 4 | Blocker (verify) | No visible authn/authz on a PII endpoint |\n| 5-9 | Should fix | `SELECT *`, N+1 / no limit, PII logging, no error handling, no input validation |\n| Tests | Should fix | Weak test; does not cover the bugs |\n\nPlease do not approve until 1-3 are fixed, the token is rotated, and auth is confirmed.\n"}], "grading": {"expectations": [{"text": "The review has inline comments anchored to specific files and lines, and a separate summary that includes a verdict", "passed": false, "evidence": "Single report with a numbered list and a table; line numbers appear inside list items. No separate summary comment and no comments anchored per line."}, {"text": "The review flags the SQL injection in the search query as a blocking problem and suggests a parameterised query", "passed": true, "evidence": "Item 1 'Blocker': parameterised queries (? or $1)."}, {"text": "The review flags the committed admin token as blocking and says it must be rotated, not just removed", "passed": true, "evidence": "Item 2 'Blocker': treat as compromised, rotate, already in branch history."}, {"text": "The review identifies the loop condition `i \u003c= rows.length` as an off-by-one bug that reads past the end of the array", "passed": true, "evidence": "Item 3 'Blocker': i \u003c= rows.length makes rows[i] undefined and throws."}, {"text": "The review flags logging the full search result (personal data) as a problem", "passed": true, "evidence": "Item 7 'Should fix': console.log of full result JSON writes PII to logs."}, {"text": "The verdict is changes requested (not approve)", "passed": true, "evidence": "'Recommendation: do not approve. Request changes.'"}, {"text": "Every inline comment starts with a weight label such as blocking, suggestion, nit, question or praise", "passed": false, "evidence": "No comment carries a label prefix; severity is given by section headings ('Blocking issues', 'Should fix') instead."}, {"text": "No inline comment addresses the author as the cause of a problem (for example 'you forgot', 'you should have'); comments talk about the code", "passed": true, "evidence": "Written about the code; no 'you forgot' style blame found."}, {"text": "The summary is no longer than about 8 lines", "passed": false, "evidence": "No distinct summary; the report is about 45 lines with a closing table, so nothing meets the short-summary bar."}, {"text": "The inline comments are ordered by file and then by line number", "passed": false, "evidence": "Ordered by severity (lines 16, 11, 18, ...), not by line number."}], "summary": {"passed": 6, "failed": 4, "total": 10, "pass_rate": 0.6}}}, {"id": "rewrites-harsh-comment-with_skill", "prompt": "i left this comment on a coworker's PR and he went quiet on me. can you make it better? keep my point though.\n\n\"This is wrong. Why would you query inside a loop?? Everyone knows that's an N+1. Rewrite it.\"\n\nthe code is a for loop over orders that calls db.query('SELECT * FROM items WHERE order_id = ' + order.id) each time", "eval_id": null, "outputs": [{"name": "response.md", "type": "text", "content": "Nothing posted anywhere. Here's a rewrite that keeps your point (querying inside the loop is an N+1, and it needs to be rewritten) but drops the parts that read as an attack (\"This is wrong\", \"Why would you...??\", \"Everyone knows\") and gives him something to act on.\n\n**Before**\n\n> This is wrong. Why would you query inside a loop?? Everyone knows that's an N+1. Rewrite it.\n\n**After**\n\n````\nblocking: this runs one `SELECT * FROM items` per order, so 500 orders means 501 queries (the classic N+1). It'll be fine in dev and slow down fast with real data. Could we fetch all the items in one query for the whole batch and group them by `order_id` in memory? Something like:\n\n```js\nconst ids = orders.map(o => o.id);\nconst items = await db.query('SELECT * FROM items WHERE order_id = ANY($1)', [ids]);\nconst itemsByOrder = Map.groupBy(items, i => i.order_id);\n// then: itemsByOrder.get(order.id) ?? []\n```\n\nAdjust the placeholder syntax to whatever our db client uses. A JOIN would also work if you'd rather do it in SQL. Happy to pair on it if useful.\n````\n\n**What changed and why**\n\n- Your point is intact: same label strength (`blocking:`), same demand to rewrite. It's just stated as what the code does and what it costs, instead of a verdict on him.\n- It now explains the consequence with a concrete number. \"Everyone knows\" is gone: if he already knows it's an N+1, it reads as condescending, and if he doesn't, it teaches him nothing.\n- It gives a way forward (one batched query, group by `order_id`, or a JOIN) so he knows what \"rewrite it\" means.\n- The comment talks about the query, not about \"you\".\n- If the order list is always tiny (say, capped at a handful), `suggestion:` is the honest label. Keep `blocking:` if you'd really stop the merge over it.\n\n**Separate comment you should probably also leave**\n\nYou only mentioned the N+1, but the query is built with `'... WHERE order_id = ' + order.id`. That string concatenation is a SQL injection risk if `order.id` can ever be influenced by user input. It's a different issue, so it should be its own comment rather than folded into the one above. The batched version above already fixes it because it uses a parameter.\n\n```\nblocking: `order.id` is concatenated straight into the SQL string, so this is injectable if the id ever comes from user input. Please use a parameterised query (the batched version in my other comment does this).\n```\n\nIf you know `order.id` is always an internal integer from the DB, say so and downgrade it to `suggestion:`. I can't tell that from the snippet.\n\n**If he's gone quiet**\n\nA short follow-up under the new comment helps more than the rewrite alone, for example: \"Sorry, my first comment came across harsher than I meant. The N+1 is the real concern, and I put a suggested fix above.\" That is your call, and I didn't write it for you to post.\n"}], "grading": {"expectations": [{"text": "The rewritten comment keeps the original technical point that querying inside a loop causes an N+1 problem", "passed": true, "evidence": "Keeps the N+1 / query-in-loop point."}, {"text": "The rewritten comment explains a concrete consequence (many round trips, latency, load on the database)", "passed": true, "evidence": "'500 orders means 501 queries ... slow down fast with real data'."}, {"text": "The rewritten comment suggests a concrete alternative such as a join, an IN query or batching", "passed": true, "evidence": "Batched query with ANY($1) grouped by order_id, plus a JOIN alternative."}, {"text": "The rewritten comment talks about the code and does not address the author personally in a critical way", "passed": true, "evidence": "Written about 'this' and 'the query'."}, {"text": "The rewritten comment starts with or clearly includes a weight label or equivalent explicit statement of how serious it is", "passed": true, "evidence": "Starts with 'blocking:'."}, {"text": "The rewritten comment itself is no more than about five sentences", "passed": false, "evidence": "The comment has about 6 sentences plus a code block, slightly over the limit."}], "summary": {"passed": 5, "failed": 1, "total": 6, "pass_rate": 0.83}}}, {"id": "rewrites-harsh-comment-without_skill", "prompt": "i left this comment on a coworker's PR and he went quiet on me. can you make it better? keep my point though.\n\n\"This is wrong. Why would you query inside a loop?? Everyone knows that's an N+1. Rewrite it.\"\n\nthe code is a for loop over orders that calls db.query('SELECT * FROM items WHERE order_id = ' + order.id) each time", "eval_id": null, "outputs": [{"name": "response.md", "type": "text", "content": "# Rewritten review comment\n\nYour original had the right point (N+1, needs a rewrite) but the delivery (\"This is wrong\", \"Everyone knows\", the double question mark) read as an attack on him rather than on the code. It also never said what to do instead. The rewrite keeps the same ask, names the problem, and gives him a concrete way forward.\n\n## Recommended version\n\n> This loop runs one `SELECT * FROM items` per order, so for N orders we make N+1 queries total (the classic N+1). It'll be fine with a handful of orders, but it'll get slow as order volume grows since each iteration is a separate DB round trip.\n>\n> Could you fetch all the items in a single query instead and group them by order in memory? Something like:\n>\n> ```js\n> const orderIds = orders.map(o => o.id);\n> const items = await db.query(\n>   'SELECT * FROM items WHERE order_id = ANY($1)', [orderIds]  // or IN (?) depending on the driver\n> );\n> const itemsByOrder = new Map();\n> for (const item of items) {\n>   if (!itemsByOrder.has(item.order_id)) itemsByOrder.set(item.order_id, []);\n>   itemsByOrder.get(item.order_id).push(item);\n> }\n> ```\n>\n> A JOIN would work too if you'd rather get orders and items in one go.\n>\n> Also, the query is built with string concatenation (`'... WHERE order_id = ' + order.id`), which is open to SQL injection. Switching to parameterized queries as above fixes that at the same time.\n>\n> Happy to pair on it if it'd help. I think this needs to change before we merge, but it's a small fix.\n\n## Shorter version (if you want it tighter)\n\n> This runs one query per order (N+1), which will get slow as the order count grows. Can we load all items in one query (`WHERE order_id IN (...)`, or a JOIN) and group them by order in memory? Also worth parameterizing the query instead of concatenating `order.id`. Happy to pair on it if useful.\n\n## What changed and why\n\n- **Dropped \"This is wrong\" / \"Everyone knows\"**: these judge the person, not the code, and \"everyone knows\" implies he's behind. Replaced with a plain statement of what the code does and why it matters.\n- **Dropped \"Why would you...??\"**: a rhetorical question with no answer expected reads as hostile. It's now a direct statement of the problem.\n- **Kept your point**: querying in a loop is an N+1, and it must be rewritten. The comment still says it needs to change before merge, so it's not softened into a suggestion.\n- **Made \"Rewrite it\" actionable**: shows the batched-query approach so he isn't guessing what you want.\n- **Added the SQL injection note**: the concatenated query is a real issue you didn't mention. It's optional, so cut it if you want to keep this comment strictly about N+1.\n- **Offered to pair**: a cheap way to repair things after a rough first comment.\n\n## Optional: a quick follow-up message\n\nSince he went quiet, a short direct note may help more than the PR comment alone:\n\n> Hey, my comment on the PR came across harsher than I meant. The N+1 is an easy thing to miss and the fix is small. Happy to hop on a call if you want to go through it.\n"}], "grading": {"expectations": [{"text": "The rewritten comment keeps the original technical point that querying inside a loop causes an N+1 problem", "passed": true, "evidence": "Keeps the N+1 point."}, {"text": "The rewritten comment explains a concrete consequence (many round trips, latency, load on the database)", "passed": true, "evidence": "'each iteration is a separate DB round trip' and slows as order volume grows."}, {"text": "The rewritten comment suggests a concrete alternative such as a join, an IN query or batching", "passed": true, "evidence": "Single batched query grouped in memory, JOIN alternative."}, {"text": "The rewritten comment talks about the code and does not address the author personally in a critical way", "passed": true, "evidence": "Written about the code; 'Could you fetch ...' is a polite request, not blame."}, {"text": "The rewritten comment starts with or clearly includes a weight label or equivalent explicit statement of how serious it is", "passed": true, "evidence": "No label, but the recommended version states 'I think this needs to change before we merge, but it's a small fix', which makes the weight explicit."}, {"text": "The rewritten comment itself is no more than about five sentences", "passed": false, "evidence": "Recommended version is about 9 sentences with a long snippet; a shorter 4-sentence alternative is also offered, but the headline version fails."}], "summary": {"passed": 5, "failed": 1, "total": 6, "pass_rate": 0.83}}}], "previous_feedback": {}, "previous_outputs": {}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + escapeHtml(summary.passed || 0) + ' passed, ' + escapeHtml(summary.failed || 0) + ' failed of ' + escapeHtml(summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML.replace(/"/g, "&quot;");
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += escapeHtml(metadata.timestamp) + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + escapeHtml(metadata.evals_run.join(", ")) + " &mdash; ";
+      html += escapeHtml(metadata.runs_per_configuration || "?") + (metadata.runs_per_configuration === 1 ? " run" : " runs") + " per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+      // With a single configuration there is nothing to compare: only its column is shown
+      const compare = cells => configs.length >= 2 ? cells : "";
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th>" + compare("<th>" + escapeHtml(labelB) + "</th><th>Delta</th>") + "</tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += compare("<td>" + fmtStat(b.pass_rate, true) + "</td>");
+      html += compare('<td class="' + deltaClass(delta.pass_rate) + '">' + escapeHtml(delta.pass_rate || "—") + "</td>") + "</tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += compare("<td>" + fmtStat(b.time_seconds, false) + "</td>");
+        html += compare('<td class="' + deltaClass(delta.time_seconds) + '">' + escapeHtml(delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td>") + "</tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += compare("<td>" + fmtStat(b.tokens, false) + "</td>");
+        html += compare('<td class="' + deltaClass(delta.tokens) + '">' + escapeHtml(delta.tokens || "—") + "</td>") + "</tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        // Numeric ids first, then ids that are names
+        const rank = id => typeof id === "number" ? 0 : 1;
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) =>
+          rank(a) - rank(b) || (rank(a) ? String(a).localeCompare(String(b)) : a - b));
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = escapeHtml(config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + escapeHtml(run.run_number) + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + escapeHtml(r.passed || 0) + "/" + escapeHtml(r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + escapeHtml(r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + escapeHtml(run.run_number) + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

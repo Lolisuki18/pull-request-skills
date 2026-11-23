@@ -1,0 +1,12 @@
+{
+  "eval_name": "large-mixed-pr-asks-for-split",
+  "prompt": "need a review on this one before friday, diff in big-pr.diff (only showing a few of the files). thanks!\n\nInput files: big-pr.diff",
+  "assertions": [
+    "The review says the PR is too large or mixes unrelated changes and asks the author to split it",
+    "The review proposes a concrete split that names separate pieces such as the logger migration, the rounding fix, the React 18 upgrade and dark mode",
+    "The review does not give an approve or changes-requested verdict (it asks for a split or comments only)",
+    "The review identifies the rounding change in billing/total.js as high risk or as deserving its own PR and tests",
+    "The review states what it did and did not review",
+    "The review contains no more than five inline comments"
+  ]
+}

@@ -1,0 +1,79 @@
+PR title: Add CSV export for invoices
+PR description:
+What: new `GET /invoices/export.csv` for finance. Supports sorting by date, amount or customer.
+Why: finance currently asks eng for a monthly dump (FIN-88).
+How to test: `pytest tests/test_export.py`, or hit the endpoint locally with `?sort=amount`.
+
+diff --git a/app/export.py b/app/export.py
+--- /dev/null
++++ b/app/export.py
+@@ -0,0 +1,44 @@
++import csv
++import io
++import logging
++import os
++
++from app.db import get_conn
++
++log = logging.getLogger(__name__)
++
++PAGE_SIZE = 500
++
++# Only these keys can ever reach the ORDER BY clause.
++SORT_COLUMNS = {
++    "date": "created_at",
++    "amount": "total_cents",
++    "customer": "customer_name",
++}
++
++EXPORT_TOKEN = os.environ.get("INVOICE_EXPORT_TOKEN")
++
++
++def export_invoices(sort="date", since=None):
++    column = SORT_COLUMNS.get(sort)
++    if column is None:
++        raise ValueError(f"unsupported sort: {sort}")
++    out = io.StringIO()
++    writer = csv.writer(out)
++    writer.writerow(["id", "customer", "total_cents", "created_at"])
++    offset = 0
++    try:
++        with get_conn() as conn:
++            while True:
++                rows = conn.execute(
++                    f"SELECT id, customer_name, total_cents, created_at FROM invoices "
++                    f"WHERE created_at >= %s ORDER BY {column} LIMIT %s OFFSET %s",
++                    (since or "1970-01-01", PAGE_SIZE, offset),
++                ).fetchall()
++                if not rows:
++                    break
++                writer.writerows(rows)
++                offset += PAGE_SIZE
++    except Exception:
++        log.exception("invoice export failed (sort=%s)", sort)
++        raise
++    return out.getvalue()
+diff --git a/tests/test_export.py b/tests/test_export.py
+--- /dev/null
++++ b/tests/test_export.py
+@@ -0,0 +1,22 @@
++import pytest
++from app.export import export_invoices
++
++
++def test_exports_header_and_rows(seeded_db):
++    text = export_invoices(sort="amount")
++    lines = text.strip().splitlines()
++    assert lines[0] == "id,customer,total_cents,created_at"
++    assert len(lines) == 1 + seeded_db.invoice_count
++
++
++def test_rejects_unknown_sort_column(seeded_db):
++    with pytest.raises(ValueError):
++        export_invoices(sort="id; DROP TABLE invoices")
++
++
++def test_sorted_by_amount(seeded_db):
++    rows = export_invoices(sort="amount").strip().splitlines()[1:]
++    totals = [int(r.split(",")[2]) for r in rows]
++    assert totals == sorted(totals)

@@ -1,0 +1,40 @@
+{
+  "expectations": [
+    {
+      "text": "The review says the PR is too large or mixes unrelated changes and asks the author to split it",
+      "passed": true,
+      "evidence": "Says it cannot be reviewed well as one PR and asks for a split."
+    },
+    {
+      "text": "The review proposes a concrete split that names separate pieces such as the logger migration, the rounding fix, the React 18 upgrade and dark mode",
+      "passed": true,
+      "evidence": "Names five pieces: rounding fix, logger, React 18, dark mode, renames."
+    },
+    {
+      "text": "The review does not give an approve or changes-requested verdict (it asks for a split or comments only)",
+      "passed": true,
+      "evidence": "'Verdict: none for now, pending a split.'"
+    },
+    {
+      "text": "The review identifies the rounding change in billing/total.js as high risk or as deserving its own PR and tests",
+      "passed": true,
+      "evidence": "Rounding change is 'small, high risk' and should have its own PR and tests; it reviewed only that closely."
+    },
+    {
+      "text": "The review states what it did and did not review",
+      "passed": true,
+      "evidence": "States it looked closely at billing only and has not seen the other 58 files."
+    },
+    {
+      "text": "The review contains no more than five inline comments",
+      "passed": true,
+      "evidence": "Four inline comments."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  }
+}

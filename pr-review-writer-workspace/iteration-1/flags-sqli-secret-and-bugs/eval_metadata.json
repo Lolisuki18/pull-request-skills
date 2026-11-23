@@ -1,0 +1,16 @@
+{
+  "eval_name": "flags-sqli-secret-and-bugs",
+  "prompt": "can you review this PR for me? the diff is in sample-pr.diff. I'm about to approve it but I want a second pair of eyes first.\n\nInput files: sample-pr.diff",
+  "assertions": [
+    "The review has inline comments anchored to specific files and lines, and a separate summary that includes a verdict",
+    "The review flags the SQL injection in the search query as a blocking problem and suggests a parameterised query",
+    "The review flags the committed admin token as blocking and says it must be rotated, not just removed",
+    "The review identifies the loop condition `i <= rows.length` as an off-by-one bug that reads past the end of the array",
+    "The review flags logging the full search result (personal data) as a problem",
+    "The verdict is changes requested (not approve)",
+    "Every inline comment starts with a weight label such as blocking, suggestion, nit, question or praise",
+    "No inline comment addresses the author as the cause of a problem (for example 'you forgot', 'you should have'); comments talk about the code",
+    "The summary is no longer than about 8 lines",
+    "The inline comments are ordered by file and then by line number"
+  ]
+}

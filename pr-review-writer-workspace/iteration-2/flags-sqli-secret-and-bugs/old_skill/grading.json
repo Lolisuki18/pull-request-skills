@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "The review has inline comments anchored to specific files and lines, and a separate summary that includes a verdict",
+      "passed": true,
+      "evidence": "Summary + verdict + 10 inline comments headed by file:line."
+    },
+    {
+      "text": "The review flags the SQL injection in the search query as a blocking problem and suggests a parameterised query",
+      "passed": true,
+      "evidence": "L9 blocking, parameterised query suggested."
+    },
+    {
+      "text": "The review flags the committed admin token as blocking and says it must be rotated, not just removed",
+      "passed": true,
+      "evidence": "L4 blocking, rotate regardless."
+    },
+    {
+      "text": "The review identifies the loop condition `i <= rows.length` as an off-by-one bug that reads past the end of the array",
+      "passed": true,
+      "evidence": "L11 blocking, reads one past the end."
+    },
+    {
+      "text": "The review flags logging the full search result (personal data) as a problem",
+      "passed": true,
+      "evidence": "L14 blocking, personal data in logs."
+    },
+    {
+      "text": "The verdict is changes requested (not approve)",
+      "passed": true,
+      "evidence": "Verdict: changes requested."
+    },
+    {
+      "text": "Every inline comment starts with a weight label such as blocking, suggestion, nit, question or praise",
+      "passed": true,
+      "evidence": "All inline comments are labelled."
+    },
+    {
+      "text": "No inline comment addresses the author as the cause of a problem (for example 'you forgot', 'you should have'); comments talk about the code",
+      "passed": true,
+      "evidence": "Comments talk about the code."
+    },
+    {
+      "text": "The summary is no longer than about 8 lines",
+      "passed": true,
+      "evidence": "Summary is one paragraph, about 6 sentences."
+    },
+    {
+      "text": "The inline comments are ordered by file and then by line number",
+      "passed": false,
+      "evidence": "Order is L4, L9, L11, L12, L12, L9, L14, L7, L9: goes back up the file twice."
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 1,
+    "total": 10,
+    "pass_rate": 0.9
+  }
+}

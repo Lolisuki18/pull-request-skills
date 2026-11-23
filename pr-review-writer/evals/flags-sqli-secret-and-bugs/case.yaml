@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: flags-sqli-secret-and-bugs
+expected_outcome: |
+  A draft review with inline comments anchored to file/line plus a short summary. Flags the SQL injection, the committed admin token (needs rotation), the off-by-one loop, and logging of full results as blocking. Verdict is changes requested. Comments are labelled by weight and read like a teammate wrote them.
+context:
+  scaffold_script: place-files.sh

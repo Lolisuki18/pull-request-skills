@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: large-mixed-pr-asks-for-split
+expected_outcome: |
+  The review says the PR is too large and mixes unrelated work, proposes splitting it into named pieces (logger, rounding fix, React 18, dark mode), singles out the rounding change as the riskiest, gives no approve/reject verdict, says what it did and did not review, and does not bury the author in line-level nits.
+context:
+  scaffold_script: place-files.sh

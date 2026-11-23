@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: harmless-patterns-no-false-alarm
+expected_outcome: |
+  The PR is safe. The dynamic ORDER BY comes from a whitelist and values are parameterised; the token is read from an env var; the broad except logs and re-raises. The review approves, raises no false security alarms, and may credit the whitelist and the injection test.
+context:
+  scaffold_script: place-files.sh
