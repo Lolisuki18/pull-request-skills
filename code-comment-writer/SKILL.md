@@ -84,7 +84,7 @@ x = y * 1.1  # 10% safety margin agreed with ops (OPS-48); remove if the quota A
 
 When presenting commented code in chat, use this structure:
 
-```markdown
+````markdown
 ### Summary
 - Added doc comment explaining invariants and failure modes (`src/example.ts:12`).
 - Removed 2 stale commented-out lines.
@@ -93,7 +93,7 @@ When presenting commented code in chat, use this structure:
 ```ts
 // <code snippet with the new/updated comments>
 ```
-```
+````
 
 ## Maintenance
 
