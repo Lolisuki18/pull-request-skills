@@ -13,6 +13,8 @@ The reviewer's question on every comment is "what did you do about this?". A goo
 
 ## Workflow
 
+Start replies with `[Review Reply X/5: <Step>]` (above the paste-ready drafts when showing status/steps).
+
 1. **Gather the comments and the current state.**
    - Comments: pasted text, or for a GitHub PR `gh pr view <n> --comments` and `gh api repos/{owner}/{repo}/pulls/{n}/comments` (inline comments carry the file, line and id). Read the review summary too; it often holds the verdict and the one or two things that matter most.
    - Current code: the diff and any commits since the review. You can't say "fixed" about code you haven't seen.
@@ -104,7 +106,7 @@ Avoid: "As I said", "Obviously", "That's not how it works", reflexive "Good catc
 
 ## Honesty rules
 
-- Never open with **Fixed.** unless the change exists, in a commit you've seen or one the user tells you they made. If the fix isn't made yet, tell the user, and either draft the reply as **Fixed.** with a `[commit]` placeholder (use it only when the change is made or about to be made but you have no sha yet; never to cover a change that does not exist) to fill in once it is, or, if they intend to do it later, open with **Not fixed yet.** ("Will fix in the next push"), so the reply never claims more than is true.
+- Never open with **Fixed.** unless the change actually exists (in the working tree, a commit you've seen, or a change the user tells you they made). If the fix exists unpushed/without a SHA yet, draft **Fixed.** with a `[commit]` placeholder; if the fix has **not** been written yet, tell the user and open with **Not fixed yet.** ("Will fix in the next push") — never use **Fixed.** to cover a change that does not exist.
 - Never claim tests pass or CI is green unless you saw it. Results you saw in this session are written as real results with the command and count (for example `60 tests OK, python -m unittest`); use `[pass/fail]` only for results you did not see.
 - **State only what the user told you or the code shows.** If the user says "fixed the header issue" but not how, don't write how. Don't add reasons or consequences the user didn't give ("a restart is acceptable for the incidents we saw", "the unbounded growth is gone now") even if they sound plausible; each one is a claim the reviewer may act on. When the user says something is fixed, get the details from the commit rather than leaving the reply vague. Only if there is no commit or diff you can read, ask the user for one line on what changed, or leave a placeholder like `[what changed]`. Don't fall back to a bare "Fixed" for a bug or must-fix comment.
 - Don't promise follow-up work the user hasn't agreed to do. Draft it as `[TICKET]` and flag it for them.
