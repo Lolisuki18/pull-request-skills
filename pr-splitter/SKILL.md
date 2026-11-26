@@ -11,7 +11,9 @@ Make a big change reviewable: a few small PRs that each do one thing, build on t
 
 ## Workflow
 
-1. **Measure.** Branch and base: `git diff --stat <base>...HEAD`, `git log <base>..HEAD --oneline`. Count files, lines and distinct areas. If the change is under roughly 400 changed lines and about one purpose, say it does not need splitting.
+Start each reply with `[PR Split X/5: <Step>]` (per `CONVENTIONS.md`).
+
+1. **Measure.** Branch and base: `git diff --stat <base>...<branch>` (default `<branch>` = `HEAD`), `git log <base>..<branch> --oneline`, and `git status` for uncommitted work. Count files, lines and distinct areas. If the change is under roughly 400 changed lines and about one purpose, say it does not need splitting.
 2. **Group by purpose.** Read the diff and sort every hunk into groups:
    - mechanical changes (renames, formatting, moves, dependency bumps, generated files)
    - refactors that prepare the feature
@@ -20,7 +22,7 @@ Make a big change reviewable: a few small PRs that each do one thing, build on t
    - docs, config, migrations
    A hunk belongs to one group only. If one file serves two groups, note that it must be split by hunk (`git add -p`).
 3. **Find dependencies.** Which group needs which? A PR must build and pass tests on its own, so a group that uses a new function must come after the group that adds it. Draw the order, and mark groups that are independent and can be opened in parallel.
-4. **Propose the stack** in this form and wait for the user's reaction:
+4. **Propose the stack** in this form and **Hard stop** (wait for explicit approval: `approved`, `ok proceed`, `duyệt`):
 
    ```text
    PR 1  refactor(billing): extract invoice totals     +120 -95, 4 files   base: main

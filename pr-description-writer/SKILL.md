@@ -13,10 +13,12 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 
 ## Workflow
 
+Start each reply with `[PR Desc X/6: <Step>]` (per `CONVENTIONS.md`).
+
 1. **Gather what the diff cannot tell you.**
-   - Diff and history: `git diff <base>...HEAD --stat`, then the diff itself, and `git log <base>..HEAD --oneline`. Find the base from the branch's upstream or ask.
+   - Diff and history: `git diff <base>...HEAD --stat`, then the diff itself, and `git log <base>..HEAD --oneline`. Find the base from the branch's upstream or ask. If the diff is empty (0 files changed), stop and tell the user there is nothing to describe.
    - Intent: a linked issue, ticket, brief or spec if the user mentions one (read it; it is usually where the *why* lives), and the commit messages.
-   - Conventions: a PR template (`.github/pull_request_template.md` or similar) and the style of recent merged PR titles (`gh pr list --state merged -L 5`). If a template exists, follow it (see "If the repo has a PR template" below).
+   - Conventions: a PR template (`.github/pull_request_template.md` or similar) and the style of recent merged PR titles (`gh pr list --state merged -L 5`, or `git log -n 10 --oneline` when `gh` is unavailable). If a template exists, follow it (see "If the repo has a PR template" below).
 2. **Decide the one-sentence "what" and "why" first.** If you can't, you don't understand the change yet; read more or ask one short question. Never invent a motivation to fill the slot.
 3. **Take inventory of what needs verifying.** Before writing "How to test", list every behaviour the change introduces, from the diff, the new tests and the ticket or brief, grouped like this:
    - main path (happy path)

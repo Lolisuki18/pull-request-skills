@@ -45,12 +45,14 @@ By default you only **draft** the review in the conversation. Posting to GitHub/
 
 ## Workflow
 
-1. **Gather context.** Get the diff and the PR title/description. For a GitHub PR: `gh pr view <n> --json title,body,baseRefName,files` and `gh pr diff <n>`. For local work: `git diff <base>...HEAD`. If linked issues or an ADR are mentioned, skim them — you can't judge whether the change is right without knowing what it was supposed to do. If no PR description exists in the repo, review the diff only and say in the summary that the description was not available.
+Start status/multi-turn replies with `[PR Review X/8: <Step>]` (keep it outside the paste-ready review block).
+
+1. **Gather context.** Get the diff and the PR title/description. For a GitHub PR: `gh pr view <n> --json title,body,baseRefName,files` and `gh pr diff <n>`. For local work: `git diff <base>...HEAD` (or `git show <commit>` for a single commit). If linked issues or an ADR are mentioned, skim them — you can't judge whether the change is right without knowing what it was supposed to do. If no PR description exists in the repo, review the diff only and say in the summary that the description was not available.
 2. **Restate the intent** to yourself in one or two sentences. If you can't, that is itself review feedback (the description is unclear).
 3. **Read the whole diff before commenting.** Many "issues" disappear once you see the rest of the change, and reading first lets you rank findings instead of narrating line by line. For big diffs, do a high-level pass (structure, approach, risk) first, then the details in the riskiest files. If the PR is too large to review well, say so and suggest how to split it — that is a legitimate finding.
 4. **Look at surrounding code, not just the diff.** Open the callers, the tests and the neighbouring files when a change's safety depends on them. A comment based on a guess about unseen code is the most common way reviews lose credibility.
 5. **Find issues in priority order** using `references/review-checklist.md`: correctness → security → data/concurrency → tests → design → readability → style. Spend your attention at the top of that list.
-6. **Write the comments**. For a diff under about 60 changed lines, load only the references you need (`comment-patterns.md` and one other); load all five for large diffs. Follow `references/comment-patterns.md` (labels, phrasing) and `references/human-voice.md` (tone, what makes a comment sound machine-written).
+6. **Write the comments**. For a diff under about 60 changed lines, load only the references you need (`comment-patterns.md` and one other); load all four for large diffs. Follow `references/comment-patterns.md` (labels, phrasing) and `references/human-voice.md` (tone, what makes a comment sound machine-written).
 7. **Write the summary** using `references/summary-templates.md`, including the verdict.
 8. **Self-check before showing it** (see below).
 

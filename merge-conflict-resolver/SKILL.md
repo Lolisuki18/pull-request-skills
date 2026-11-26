@@ -11,15 +11,17 @@ Resolve conflicts so that both sides' intent survives, and show the reasoning so
 
 ## Workflow
 
-1. **Assess before touching.** `git status`, which operation is in progress (merge, rebase, cherry-pick), the list of conflicted files (`git diff --name-only --diff-filter=U`), and the two branches. Warn if the working tree has unrelated uncommitted work.
+Start each reply with `[Conflict X/7: <Step>]` (per `CONVENTIONS.md`).
+
+1. **Assess before touching.** `git status`, which operation is in progress (merge, rebase, cherry-pick), the list of conflicted files (`git diff --name-only --diff-filter=U`), and the two branches. If `git diff --diff-filter=U` is empty (e.g., pasted or simulated conflict markers), analyze against the current file and available git history, marking missing intent `[Needs input: ...]`. Warn if the working tree has unrelated uncommitted work.
 2. **Understand each side.** For every conflicted file read the three versions: base, ours, theirs (`git show :1:<file>`, `:2:`, `:3:`) and the commits behind each side (`git log --merge -p -- <file>`, or `git log <base>..<branch> -- <file>`). Note that in a **rebase**, "ours" is the branch being rebased onto and "theirs" is the user's own commits; say which is which.
 3. **Classify the conflict** per hunk:
    - *Independent edits that touched nearby lines*: keep both.
    - *Same change made twice*: keep one.
-   - *Real disagreement* (different logic for the same behavior): needs a decision. Explain both intents and recommend one; ask when the choice is a product or design decision.
+   - *Real disagreement* (different logic for the same behavior): needs a decision. Explain both intents and recommend one; **Hard stop:** ask and wait for explicit approval *before* Step 4 edits when the choice is a product or design decision.
    - *One side deleted or moved what the other edited*: apply the edit in the new location, or decide whether the delete wins.
    - *Generated or lock files* (`package-lock.json`, `yarn.lock`, migrations numbering): do not hand-merge; regenerate with the project's tool after resolving the manifest, and renumber migrations.
-4. **Resolve.** Edit the file to the final content with no conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`). Keep formatting and imports consistent with the surrounding code; update callers if a signature changed on one side.
+4. **Resolve.** Edit the file to the final content with no conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`). Reconcile variable names, exception types, constants, and test expectations across the file; keep formatting and imports consistent with the surrounding code; update callers if a signature changed on one side.
 5. **Verify.** Search the whole tree for leftover markers. Run build, lint, type-check and the relevant tests, and report real results. A clean merge with a red build is not resolved.
 6. **Explain.** Per file: what each side did, what you chose and why.
 7. **Stop before finishing.** Stage the files only if asked. Leave `git merge --continue` / `git rebase --continue` / the commit to the user or do it on request. Never use `git push --force` or `git reset --hard` unless the user explicitly asks, and say what it will discard first.
