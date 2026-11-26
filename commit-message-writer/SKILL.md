@@ -11,9 +11,11 @@ Write the message a future maintainer wants when they run `git log` or `git blam
 
 ## Workflow
 
-1. **Read the change, not just the filenames.** `git status`, `git diff --staged` (or `git diff` if nothing is staged), `git log -n 15 --oneline`. Read the diff itself: the message must describe what the code does, not what the files are called.
+Start each reply with `[Commit X/4: <Step>]` (per `CONVENTIONS.md`).
+
+1. **Read the change, not just the filenames.** `git status`, `git diff --staged` (or `git diff` if nothing is staged; also check untracked files in `git status`, or `git show <sha>` for an existing commit), `git log -n 15 --oneline`. If the working tree is clean and no commit was given, stop and say "Nothing staged or modified to commit." Read the diff itself: the message must describe what the code does, not what the files are called.
 2. **Find the convention.** Look at recent commits and for `commitlint`, `.gitmessage`, `CONTRIBUTING`, or a ticket pattern in branch names. Follow what exists: prefix style, scope names, language, ticket format. If there is none, use Conventional Commits (`type(scope): subject`).
-3. **Check the shape of the change.** If the diff mixes unrelated things (a refactor plus a feature plus a formatting sweep), say so and propose a split before writing messages (see below).
+3. **Check the shape of the change.** If the diff mixes unrelated things (a refactor plus a feature plus a formatting sweep), say so and propose a split before writing messages (see below). **Hard stop:** wait for explicit confirmation (split vs single commit) before running `git commit`, even if the user already asked to commit.
 4. **Write the message** and show it ready to paste. If the user already asked to commit, or a calling workflow (such as `delivery-lifecycle`) says the commit belongs to that stage, run `git commit` with the proposed message and report the result. Otherwise do not commit unless asked.
 
 ## Message format

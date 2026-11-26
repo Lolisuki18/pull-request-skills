@@ -11,6 +11,8 @@ Turn a red check into one clear answer: what failed first, why, and what to do. 
 
 ## Workflow
 
+Start each reply with `[CI X/6: <Step>]` (per `CONVENTIONS.md`).
+
 1. **Get the real log.** Prefer evidence over memory: `gh pr checks`, `gh run list`, `gh run view <id> --log-failed` when the GitHub CLI is available; otherwise ask the user to paste the failing step's log. Never guess from the job name alone.
 2. **Find the first failure.** Read from the failing step upward to the first error, not the final "exit code 1". Later errors are usually noise. Note the step, command, exit code and the exact error text.
 3. **Classify**, using the evidence:
@@ -25,8 +27,8 @@ Turn a red check into one clear answer: what failed first, why, and what to do. 
 
    Say which class you believe and what would change your mind. If two fit, say both.
 4. **Trace to the code.** Map the error to `file:line` in the diff (`git diff <base>...HEAD`). Check whether the failing test or step also fails on the base branch (`gh run list --branch <base>`): if yes, the PR did not cause it.
-5. **Reproduce locally when cheap.** Run the same command the CI step runs (found in the workflow file), with the same versions where possible. Report the real result. If it passes locally, list the differences to check: versions, env vars, OS, data, order of tests, clean vs cached install.
-6. **Propose the smallest fix**, matched to the class:
+5. **Reproduce locally when cheap.** Run the same command the CI step runs (from the workflow file, or directly from the log if no `.github/workflows/` file exists), with the same versions where possible. Report the real result. If it passes locally, list the differences to check: versions, env vars, OS, data, order of tests, clean vs cached install.
+6. **Propose the smallest fix**, matched to the class (**Hard stop:** wait for explicit user approval before editing files or regenerating lockfiles):
    - Code bug: the fix, plus the test that proves it. Offer to apply it.
    - Flake: name the cause (race, sleep, shared fixture) and the stable fix; do not just add a retry unless the user wants that as a stopgap, and label it as one.
    - Config / dependency: the exact file and line to change; regenerate the lockfile with the project's tool.

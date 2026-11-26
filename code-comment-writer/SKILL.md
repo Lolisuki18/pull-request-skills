@@ -13,14 +13,16 @@ The code already shows **what** it does. A comment earns its place by saying **w
 
 ## Workflow
 
+Start each reply with `[Comments X/6: <Step>]` (per `CONVENTIONS.md`).
+
 1. **Read the code and its surroundings.** Open the function, its callers and its tests, and the neighbouring files. Intent often lives in the commit history (`git log -p` or `git blame` on the lines in question), the ticket, or a related test; use them to learn the *why*.
 2. **Learn the local convention before writing.** What comment style do neighbouring files use: JSDoc or TSDoc, Python docstring style (Google, NumPy, reST), Javadoc? Are comments in English or another language? Do they use `TODO(name)`? Match it; don't introduce a new style.
-3. **Find the places a reader would get stuck.** Non-obvious decisions, workarounds, magic values, ordering or locking constraints, invariants, units, side effects, surprising edge cases, and public APIs without explanation.
+3. **Find the places a reader would get stuck.** Non-obvious decisions, workarounds, magic values, ordering or locking constraints, invariants, units, side effects, surprising edge cases, and public APIs without explanation. If the file is already sufficiently documented, stop and say no comments are needed.
 4. **Write or edit comments** following the rules below. Don't change code behaviour.
 5. **Verify each comment against the code** by tracing it. A wrong comment is worse than none.
-6. **Deliver**:
-   - By default, show the commented code or diff first so the user can review before modifying files.
-   - If the user explicitly asked to edit files directly, apply comment modifications only, verify that runtime behavior and code logic are untouched, and summarize the changes.
+6. **Deliver (Hard stop):**
+   - By default, show the commented code or diff first and wait for explicit approval (`approved`, `ok proceed`) before modifying files.
+   - If the user explicitly asked to edit files directly, apply comment modifications only, verify that runtime behavior and code logic are untouched (report real test/check output or `"not run"`), and summarize the changes.
 
 ## What to comment
 
