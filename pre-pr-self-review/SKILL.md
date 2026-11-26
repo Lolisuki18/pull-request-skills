@@ -19,7 +19,7 @@ The output is a list for the author to act on, not comments to post.
    - The change: `git status`, `git diff <base>...HEAD` and uncommitted changes, `git log <base>..HEAD --oneline`. Find the base from the upstream branch or ask.
    - The requirements: the brief, ticket, acceptance table or spec the user names, or a link in the branch name, commits or a PR template. If there is none and you can't tell what the change is meant to do, ask one short question, or derive the intent from commit messages and say you did.
    - How the project verifies itself: the test, lint, type-check and build commands (`package.json`, `Makefile`, CI config).
-2. **List the requirements.** Break the brief into numbered, checkable items: every behaviour, rule, error message, exact copy string, state change, acceptance case and "do not change" instruction. Number them (R1, R2…) so findings can refer to them.
+2. **List the requirements.** Break the brief into numbered, checkable items: every behaviour, rule, error message, exact copy string, state change, acceptance case and "do not change" instruction. Number them (R1, R2…) so findings can refer to them. When the brief has no numbered items, you make the numbering yourself and show it to the user for confirmation.
 3. **Trace each one**: requirement → where the code does it (`file:line`) → which test covers it, or "no test" or "manual only". Mark each **covered / partial / missing / unclear**. Only mark covered for code you have read doing the thing. For acceptance cases with numbers, compute the expected result by hand and follow the code path. Briefs and reference code can contain mistakes; don't assume the reference snippet is right just because the brief says so.
 4. **Review the change itself** for defects, in priority order: correctness and edge cases, security, data and concurrency, tests, design and scope, readability. Read `references/numbers-and-money.md` when the change does arithmetic, rounding, money or percentages. Read `references/forms-and-validation.md` when it touches forms, inputs, error messages or UI states.
 5. **Check for debris and scope creep**: leftover `console.log`/`debugger`/print statements, commented-out code, TODOs without an owner or ticket, unrelated reformatting, files that shouldn't be committed (env files, build output, large lockfile churn), hardcoded test data or secrets, and changes outside what the brief asked for.
@@ -31,7 +31,7 @@ The output is a list for the author to act on, not comments to post.
 Keep it short. Findings should be few, ranked, and actionable.
 
 ```
-Verdict: ready to open | fix first (N items) | can't tell yet (missing: ...)
+Verdict: ready to open | fix first (N items) | diff does not match the brief | can't tell yet (missing: ...)
 
 Fix before opening
 1. `file:line`: what's wrong, why it matters, suggested fix.
@@ -49,6 +49,7 @@ Not checked / needs you
 - Needs a manual check: mobile layout, screen reader.
 ```
 
+- **Verdicts:** *ready to open*: nothing blocks it. *fix first*: the diff does what the brief asks but has gaps or defects. *diff does not match the brief*: the diff fixes something other than what the brief, ticket or report describes, or the reported symptom did not reproduce; say what it does instead, and tell the user to align the brief or the diff before opening. *can't tell yet*: you lack the brief, the base or a result you need.
 - **Fix before opening** is what you'd mark `blocking:` in a review: wrong behaviour, a missing requirement, a security issue, a failing check. Roughly eight items at most; if there are more, group them.
 - **Worth considering** is suggestions and nits worth the author's time. Skip the trivial.
 - **Collapse covered requirements** into a range ("R1–R9 covered") unless the user asks for the full table.
@@ -63,6 +64,7 @@ Not checked / needs you
 - Prefer the checks that catch real defects over exhaustive style review; formatters and linters already cover style.
 - Flag **unverifiable promises** the PR description would make: "tested on staging", "works with a screen reader". Tell the user these need doing by hand and leave them as placeholders in the PR.
 - Don't fix the code unless asked. The user may just want the list. If they ask you to fix, fix the "Fix before opening" items, show what changed, and re-trace the affected requirements.
+- Take `file:line` from tool output (`grep -n` / viewer) in the same turn; re-check after any commit that touches the file.
 - Match the project's conventions when you suggest fixes (read neighbouring code first).
 
 ## Self-check before reporting

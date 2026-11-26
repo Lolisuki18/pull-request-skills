@@ -14,7 +14,7 @@ Write the message a future maintainer wants when they run `git log` or `git blam
 1. **Read the change, not just the filenames.** `git status`, `git diff --staged` (or `git diff` if nothing is staged), `git log -n 15 --oneline`. Read the diff itself: the message must describe what the code does, not what the files are called.
 2. **Find the convention.** Look at recent commits and for `commitlint`, `.gitmessage`, `CONTRIBUTING`, or a ticket pattern in branch names. Follow what exists: prefix style, scope names, language, ticket format. If there is none, use Conventional Commits (`type(scope): subject`).
 3. **Check the shape of the change.** If the diff mixes unrelated things (a refactor plus a feature plus a formatting sweep), say so and propose a split before writing messages (see below).
-4. **Write the message** and show it ready to paste. Do not run `git commit` unless the user asks.
+4. **Write the message** and show it ready to paste. If the user already asked to commit, or a calling workflow (such as `delivery-lifecycle`) says the commit belongs to that stage, run `git commit` with the proposed message and report the result. Otherwise do not commit unless asked.
 
 ## Message format
 
@@ -53,5 +53,5 @@ Explain how to stage each (`git add -p`, `git add <files>`). Each commit should 
 - Do not claim tests pass, a bug is fixed or performance improved unless you saw evidence. Put unverified claims in neither subject nor body.
 - Do not use filler ("various fixes", "misc changes", "WIP") unless the user asks for a WIP commit.
 - Amending or squashing: write the message for the final combined change, not a list of the old messages.
-- If the diff contains secrets, generated files or debug leftovers, point it out before the message.
+- If the staged diff rewrites whole files (CRLF/LF line-ending churn) so it is much larger than the real change, warn the user and suggest keeping the original line endings or adding a `.gitattributes`. If the diff contains secrets, generated files or debug leftovers, point it out before the message.
 - **Language:** reply in the user's language; commit text follows the repo's language.

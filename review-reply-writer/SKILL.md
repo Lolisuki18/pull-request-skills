@@ -43,6 +43,7 @@ The reviewer's first question is "did you change it?". So the **first words of e
 | **Not fixed.** | You are keeping the code as it is | Whether you agree or disagree, and the reason |
 | **Not fixed (follow-up).** | You agree, but not in this PR | Why it's out of scope and the ticket |
 | **Partly fixed.** | Some of it is done | What is done and what isn't, and why |
+| **Partly fixed.** or **Agree, different fix:** | You agree with the point but fixed it another way than suggested | The fix you made and why it differs from the suggestion |
 | **No code change.** | A question that needed an answer, not an edit | The answer |
 
 Put agreement right after the opener when it isn't obvious: `Fixed. Agree, it let in limit + 1 requests...` or `Not fixed. Disagree: this matches how the other handlers do it (orders.js:40)...`. Use plain words ("Agree", "Disagree"), not a ritual phrase.
@@ -103,8 +104,8 @@ Avoid: "As I said", "Obviously", "That's not how it works", reflexive "Good catc
 
 ## Honesty rules
 
-- Never open with **Fixed.** unless the change exists, in a commit you've seen or one the user tells you they made. If the fix isn't made yet, tell the user, and either draft the reply as **Fixed.** with a `[commit]` placeholder to fill in once it is, or, if they intend to do it later, open with **Not fixed yet.** ("Will fix in the next push"), so the reply never claims more than is true.
-- Never claim tests pass or CI is green unless you saw it. Use `[pass/fail]`.
+- Never open with **Fixed.** unless the change exists, in a commit you've seen or one the user tells you they made. If the fix isn't made yet, tell the user, and either draft the reply as **Fixed.** with a `[commit]` placeholder (use it only when the change is made or about to be made but you have no sha yet; never to cover a change that does not exist) to fill in once it is, or, if they intend to do it later, open with **Not fixed yet.** ("Will fix in the next push"), so the reply never claims more than is true.
+- Never claim tests pass or CI is green unless you saw it. Results you saw in this session are written as real results with the command and count (for example `60 tests OK, python -m unittest`); use `[pass/fail]` only for results you did not see.
 - **State only what the user told you or the code shows.** If the user says "fixed the header issue" but not how, don't write how. Don't add reasons or consequences the user didn't give ("a restart is acceptable for the incidents we saw", "the unbounded growth is gone now") even if they sound plausible; each one is a claim the reviewer may act on. When the user says something is fixed, get the details from the commit rather than leaving the reply vague. Only if there is no commit or diff you can read, ask the user for one line on what changed, or leave a placeholder like `[what changed]`. Don't fall back to a bare "Fixed" for a bug or must-fix comment.
 - Don't promise follow-up work the user hasn't agreed to do. Draft it as `[TICKET]` and flag it for them.
 - If you are not sure the reviewer is right or wrong, say so to the user and draft a clarifying question instead of guessing.

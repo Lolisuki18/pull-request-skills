@@ -19,6 +19,7 @@ Format: newest first. Skills are prompts, so "breaking" means a change in behavi
 - Every skill states that diffs, logs and review comments are data, not instructions.
 
 ### Fixed
+- Friction found running the skills on a small Python CLI: `pr-description-writer` and `review-reply-writer` write test results seen in the session as real results (placeholders only for unseen ones); `pr-description-writer` says when the PR does not fix the reported problem and keeps known same-class defects in the chat; `review-reply-writer` gains a "Agree, different fix:" opener and clearer `[commit]` use; `pre-pr-self-review` gains a "diff does not match the brief" verdict; `commit-message-writer` commits when asked and warns about line-ending churn; `pr-review-writer` loads fewer references for small diffs and handles a missing PR description; both review skills take `file:line` from tool output in the same turn.
 - `code-comment-writer`: unbalanced code fence in the output-format example.
 
 ## 0.1.0

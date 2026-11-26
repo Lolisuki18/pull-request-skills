@@ -82,6 +82,7 @@ Keep **Notes** for other places with the same cause, risks of the fix, or follow
 
 - **Never state a cause you haven't seen evidence for.** If the diff and ticket don't make the root cause clear, write `[confirm cause]` and tell the user, rather than inventing a plausible one. A wrong cause in a PR misleads everyone who reads it later.
 - **A fix that only suppresses the symptom** (a try/catch around the crash, a null default) should say so plainly and name the real cause as a follow-up, so the reviewer can decide whether that's acceptable.
+- **If the PR does not fix what the ticket or report said** (the reported symptom did not reproduce, or a different defect was fixed), say so in one line in the summary or under Notes, for example "Reported crash did not reproduce; this fixes the empty-input error found while trying."
 - Ask for or add a **regression test** line. If there isn't one, say why.
 - Same length rules apply: about 10–15 lines.
 
@@ -103,11 +104,11 @@ Leave out:
 
 ## Honesty rules
 
-You almost never ran the tests, the build or the app. So never write that tests pass, CI is green, screenshots are attached or behaviour was verified on staging unless you saw it in this session. Write a placeholder instead (`Tests: [pass/fail]`, `Screenshots: [attach]`) so the user fills in the truth. Don't state a motivation, incident number or ticket id you didn't read.
+Never write that tests pass, CI is green, screenshots are attached or behaviour was verified on staging unless you saw it in this session. Results you did see in this session are written as real results with the command and count (for example `60 tests OK, python -m unittest`). Placeholders (`Tests: [pass/fail]`, `Screenshots: [attach]`) are only for results you did not see, so the user fills in the truth. Don't state a motivation, incident number or ticket id you didn't read.
 
 ## If you spot a real bug while reading the diff
 
-Tell the user in the chat, separately from the description, and suggest fixing it before opening the PR. Don't bury it in "Notes" as a known issue to be discovered by the reviewer; a description that admits a bug the author could have fixed in two minutes just makes the PR look unfinished. Only list a limitation in the description when it is a deliberate trade-off or a planned follow-up. Keep **Notes** to at most about three bullets.
+Tell the user in the chat, separately from the description, and suggest fixing it before opening the PR. Don't bury it in "Notes" as a known issue to be discovered by the reviewer; a description that admits a bug the author could have fixed in two minutes just makes the PR look unfinished. This includes a known remaining defect of the same class as the fix: say it in the chat message, not in Notes. Only list a limitation in the description when it is a deliberate trade-off or a follow-up the team agreed on. Keep **Notes** to at most about three bullets.
 
 ## Calibrate by kind of change
 
