@@ -45,7 +45,7 @@ By default you only **draft** the review in the conversation. Posting to GitHub/
 
 ## Workflow
 
-Start status/multi-turn replies with `[PR Review X/8: <Step>]` (keep it outside the paste-ready review block).
+Start each reply with `[PR Review X/8: <Step>]` (keep it outside the paste-ready review block); inside a calling workflow, keep that workflow's label instead.
 
 1. **Gather context.** Get the diff and the PR title/description. For a GitHub PR: `gh pr view <n> --json title,body,baseRefName,files` and `gh pr diff <n>`. For local work: `git diff <base>...HEAD` (or `git show <commit>` for a single commit). If linked issues or an ADR are mentioned, skim them — you can't judge whether the change is right without knowing what it was supposed to do. If no PR description exists in the repo, review the diff only and say in the summary that the description was not available.
 2. **Restate the intent** to yourself in one or two sentences. If you can't, that is itself review feedback (the description is unclear).

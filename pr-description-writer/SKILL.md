@@ -13,7 +13,7 @@ Brevity is the main quality bar. A reviewer already has the diff; the descriptio
 
 ## Workflow
 
-Start each reply with `[PR Desc X/6: <Step>]` (per `CONVENTIONS.md`).
+Start each reply with `[PR Desc X/6: <Step>]`; inside a calling workflow, keep that workflow's label instead.
 
 1. **Gather what the diff cannot tell you.**
    - Diff and history: `git diff <base>...HEAD --stat`, then the diff itself, and `git log <base>..HEAD --oneline`. Find the base from the branch's upstream or ask. If the diff is empty (0 files changed), stop and tell the user there is nothing to describe.

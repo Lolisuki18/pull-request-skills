@@ -11,9 +11,9 @@ Resolve conflicts so that both sides' intent survives, and show the reasoning so
 
 ## Workflow
 
-Start each reply with `[Conflict X/7: <Step>]` (per `CONVENTIONS.md`).
+Start each reply with `[Conflict X/7: <Step>]`; inside a calling workflow, keep that workflow's label instead.
 
-1. **Assess before touching.** `git status`, which operation is in progress (merge, rebase, cherry-pick), the list of conflicted files (`git diff --name-only --diff-filter=U`), and the two branches (`git name-rev MERGE_HEAD` / `REBASE_HEAD` if needed). If no merge/rebase/cherry-pick is in progress and no conflict markers (`<<<<<<<`) exist in the target files or user message, stop and report that there are no conflicts to resolve. If `git diff --diff-filter=U` is empty but pasted/simulated conflict markers are present, analyze against the current file and available git history, marking missing intent `[Needs input: ...]`. Warn if the working tree has unrelated uncommitted work.
+1. **Assess before touching.** `git status`, which operation is in progress (merge, rebase, cherry-pick), the list of conflicted files (`git diff --name-only --diff-filter=U`), and the two branches (`git name-rev MERGE_HEAD` / `REBASE_HEAD` if needed). If no merge/rebase/cherry-pick is in progress and no conflict markers (`<<<<<<<`) exist in the target files or user message, stop and report that there are no conflicts to resolve. If `git diff --diff-filter=U` is empty but pasted/simulated conflict markers are present, analyze against the current file and available git history, marking missing intent `[Needs input: ...]` (`[Cần bổ sung: ...]` in a Vietnamese reply). Warn if the working tree has unrelated uncommitted work.
 2. **Understand each side.** For every conflicted file read the three versions: base, ours, theirs (`git show :1:<file>`, `:2:`, `:3:`) and the commits behind each side (`git log --merge -p -- <file>`, or `git log <base>..<branch> -- <file>`). Note that in a **rebase**, "ours" is the branch being rebased onto and "theirs" is the user's own commits; say which is which.
 3. **Classify the conflict** per hunk:
    - *Independent edits that touched nearby lines*: keep both.
