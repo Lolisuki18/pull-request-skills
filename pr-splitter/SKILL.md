@@ -11,7 +11,7 @@ Make a big change reviewable: a few small PRs that each do one thing, build on t
 
 ## Workflow
 
-Start each reply with `[PR Split X/5: <Step>]` (per `CONVENTIONS.md`).
+Start each reply with `[PR Split X/7: <Step>]` (per `CONVENTIONS.md`).
 
 1. **Measure.** Branch and base: `git diff --stat <base>...<branch>` (default `<branch>` = `HEAD`), `git log <base>..<branch> --oneline`, and `git status` for uncommitted work. Count files, lines and distinct areas. If the change is under roughly 400 changed lines and about one purpose, say it does not need splitting.
 2. **Group by purpose.** Read the diff and sort every hunk into groups:
