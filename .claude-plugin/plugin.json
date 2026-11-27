@@ -1,6 +1,6 @@
 {
   "name": "pull-request-skills",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Nine agent skills for the life of a pull request: commit messages, PR descriptions, self-review, reviews, replies, CI triage, merge conflicts, PR splitting and code comments.",
   "author": {
     "name": "Lolisuki18",

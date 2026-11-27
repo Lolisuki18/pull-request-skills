@@ -41,7 +41,7 @@ Start each reply with `[Comments X/6: <Step>]`; inside a calling workflow, keep 
 - **Commented-out code.** Delete it; it's in the history.
 - **Apologies and jokes** ("sorry, hacky", "magic, don't touch"). Say what's hacky and why, or fix it.
 - **Long essays** inline. If the explanation needs paragraphs, put it in a doc and link it.
-- **Anything you aren't sure of.** Don't invent a reason. If you can't tell why the code is the way it is, say what it observably does, and tell the user the reason is unknown so they can fill it in. Never write a confident explanation that you guessed, and never put gap text such as "reason not documented" into the source; put gaps in the chat reply.
+- **Anything you aren't sure of.** Don't invent a reason. If you can't tell why the code is the way it is, tell the user the reason is unknown so they can fill it in; add a comment only if it says something the code does not already say (units, source, constraint). A comment that just restates the value adds nothing: leave the value as it is and list it in the chat reply as a question. Never write a confident explanation that you guessed, and never put gap text such as "reason not documented" into the source; put gaps in the chat reply.
 
 ## Style
 

@@ -49,7 +49,7 @@ Not verified: <what you could not run or see>
 ## Rules
 
 - Do not disable, skip, delete or weaken a test or check to get green. If a test is truly obsolete, say so and let the user decide.
-- Do not re-run or push commits unless the user asks. Re-running to confirm a flake is fine when asked.
+- Do not push commits unless the user asks. Never re-run just to get a green check. Re-running a single test to classify it (at least 5 runs on the same commit, see below) is part of the job; say how many runs you did.
 - Never print secrets that appear in logs; refer to them by name.
 - If the log is truncated or missing, say what you need instead of guessing.
 - Only say "flaky" when the same commit both passes and fails: rerun the test at least 5 times (or compare earlier runs) and report the counts. A test that fails on every run, on the base branch too, is deterministic, not flaky. Never retry or skip a test as the fix.

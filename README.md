@@ -48,6 +48,40 @@ this PR is too big, split it into smaller ones
 
 Each skill's `description` tells Claude when to pick it up, so you usually don't have to name it.
 
+## What a run looks like
+
+These excerpts come from a test run on a sample app (`Test-skill`, a small habit tracker plus two other toy modules), not from a production project. Excerpt of a review written by `pr-review-writer` on a pull request in the sample `taskbox` module (summary, verdict and the first three inline comments; saved output of the test run, not a file in the sample repo):
+
+Source: `Test-skill run output pr-review.md (lines 3-6 and 8-16)`, quoted verbatim.
+
+````markdown
+## Summary
+This makes `load_tasks` turn a non-UTF-8 data file into a `StorageError`, so all four commands print `error: ...` and exit 1 instead of dumping a traceback. The catch is in the right place and the tests cover both the library and the CLI. Nothing blocks the merge. One test doesn't exercise the new branch, and the description should say plainly that the crash from the original report isn't what this fixes.
+
+Verdict: approve with comments
+
+## Inline comments
+`taskbox/storage.py:37`
+suggestion: `json.loads` further down (L43) has the same hole: a deeply nested file raises `RecursionError`, which isn't caught either, so you'd still get a traceback for that input. I get it if you want this PR to stay about decoding, in that case a follow-up issue is enough.
+
+`tests/test_storage.py:84`
+nit: `test_S3_utf8_bom_is_rejected_with_storage_error` passes without this change (BOM already ends up as a `JSONDecodeError`). Fine to keep as a boundary case, but it isn't covering the new `except`, so maybe move it next to the other corrupt-JSON cases or drop it.
+
+`tests/test_cli.py:196`
+praise: asserting `read_bytes()` is unchanged after each of the four commands is the right check. A fix that "recovers" by rewriting the file would pass a status-code-only test and lose someone's data.
+````
+
+## Install as a Claude Code plugin
+
+After the repos are published, the marketplace lives in `ai-workflow-suite`:
+
+```bash
+claude plugin marketplace add Lolisuki18/ai-workflow-suite
+claude plugin install pull-request-skills@lolisuki18-skills
+```
+
+The manifest (`.claude-plugin/plugin.json`) has **not** been checked with `claude plugin validate` yet. Plugin skills are namespaced by the plugin name. The script install below does not need any of this.
+
 ## Install
 
 Skills live in a folder named after the skill, containing a `SKILL.md`. Since these skills adhere to the standard open agent skill format, they work across **Claude Code**, **Google Antigravity**, **Cursor**, and other agent environments.

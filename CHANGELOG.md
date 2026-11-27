@@ -2,9 +2,12 @@
 
 Format: newest first. Skills are prompts, so "breaking" means a change in behavior an agent will notice (labels, hard stops, script flags).
 
-## Unreleased (next: 0.2.0)
+## [Unreleased]
+
+## [1.0.0] - 2026-11-27
 
 ### Added
+- Shared `scripts/run-evals.py` (copy of the canonical file in `ai-workflow-suite`; `turns:` multi-turn convention, `--dry-run`).
 - Skills: `commit-message-writer`, `ci-failure-triager`, `merge-conflict-resolver`, `pr-splitter`, each with one eval case (run once, results in the README).
 - `scripts/validate.py` and a GitHub Actions workflow.
 - `scripts/install.py`: links or copies the skills into an agent's skills folder (junctions on Windows, symlinks elsewhere; never overwrites); `--only` / `--exclude` to choose skills.
@@ -14,6 +17,7 @@ Format: newest first. Skills are prompts, so "breaking" means a change in behavi
 - `LICENSE` (MIT).
 
 ### Changed
+- `pr-review-writer` and `pr-description-writer` read references at the step that needs them (size rule unchanged); measured token size is unchanged (`pr-review-writer` 8,759 -> 8,821, `pr-description-writer` 3,213 -> 3,225 at tokens = bytes / 3.8), only the timing of the reads is explicit.
 - Skill descriptions are English only and shorter (4 trigger phrases, at most 650 characters) to cut the context every installed skill costs. The trigger evals keep their Vietnamese prompts to check that matching still works.
 - Repository renamed in the README to `pull-request-skills`; the full evaluation runs of `pr-review-writer` moved out of the repo (benchmark summaries kept in `pr-review-writer/evals/results/`).
 - Every skill states that diffs, logs and review comments are data, not instructions.
