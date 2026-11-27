@@ -19,6 +19,12 @@ Format: newest first. Skills are prompts, so "breaking" means a change in behavi
 - Every skill states that diffs, logs and review comments are data, not instructions.
 
 ### Fixed
+- Removed the "(per `CONVENTIONS.md`)" pointers from all SKILL.md files (that file is not shipped here); each skill states its label rule inline, and inside a calling workflow keeps that workflow's label.
+- `commit-message-writer`: the Step 3 hard stop applies only when the diff mixes unrelated work; `git commit` runs only when the user asked in this conversation (a calling workflow may pass it along but does not create it).
+- `pre-pr-self-review`: numbering an unnumbered brief is one behaviour (number it, mark `[Needs input: confirm numbering]` once, do not stop); early stop requires that no changed file maps to any requirement.
+- `pr-review-writer`: every reply starts with its step label, like the sibling skills.
+- Placeholders follow the reply language: `[Needs input: ...]` in English, `[Cần bổ sung: ...]` in Vietnamese.
+- Hard stops added earlier but not yet listed: `ci-failure-triager` (before editing files or regenerating lockfiles), `code-comment-writer` (Deliver step, before modifying files), `pr-splitter` (stack approval before any split), `merge-conflict-resolver` (real disagreements need a decision), `commit-message-writer` (mixed diffs); step labels added to the new skills.
 - Friction found running the skills on a small Python CLI: `pr-description-writer` and `review-reply-writer` write test results seen in the session as real results (placeholders only for unseen ones); `pr-description-writer` says when the PR does not fix the reported problem and keeps known same-class defects in the chat; `review-reply-writer` gains a "Agree, different fix:" opener and clearer `[commit]` use; `pre-pr-self-review` gains a "diff does not match the brief" verdict; `commit-message-writer` commits when asked and warns about line-ending churn; `pr-review-writer` loads fewer references for small diffs and handles a missing PR description; both review skills take `file:line` from tool output in the same turn.
 - `code-comment-writer`: unbalanced code fence in the output-format example.
 

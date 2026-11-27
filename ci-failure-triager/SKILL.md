@@ -11,7 +11,7 @@ Turn a red check into one clear answer: what failed first, why, and what to do. 
 
 ## Workflow
 
-Start each reply with `[CI X/6: <Step>]` (per `CONVENTIONS.md`).
+Start each reply with `[CI X/6: <Step>]`; inside a calling workflow, keep that workflow's label instead.
 
 1. **Get the real log.** Prefer evidence over memory: `gh pr checks`, `gh run list`, `gh run view <id> --log-failed` when the GitHub CLI is available; otherwise ask the user to paste the failing step's log. Never guess from the job name alone.
 2. **Find the first failure.** Read from the failing step upward to the first error, not the final "exit code 1". Later errors are usually noise. Note the step, command, exit code and the exact error text.

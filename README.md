@@ -110,7 +110,7 @@ Link or copy the skill folders into the agent's skills directory: Cursor `.curso
 | [`dev-workflow-skills`](https://github.com/Lolisuki18/dev-workflow-skills) | idea → plan → code → tests → audit, bug investigation. Its `dev-lifecycle` offers `pre-pr-self-review` and `pr-description-writer` from this repo at the end |
 | [`pull-request-skills`](https://github.com/Lolisuki18/pull-request-skills) (this one) | PR description, PR review, review replies, pre-PR self-review, code comments |
 | [`qa-workflow-skills`](https://github.com/Lolisuki18/qa-workflow-skills) | QA/STLC: test plan, test matrix, E2E, API, non-functional, regression, defects, summary report |
-| `ai-workflow-suite` | `delivery-lifecycle` orchestrator across all four repos, shared `CONVENTIONS.md`, `install-all.py` |
+| `ai-workflow-suite` | `delivery-lifecycle` orchestrator across all four repos, shared `CONVENTIONS.md` (optional suite context; these skills do not need it), `install-all.py` |
 | [`docs-workflow-skills`](https://github.com/Lolisuki18/docs-workflow-skills) | README, diagrams, API docs, ADRs, SDLC reports, Review 2 pack |
 
 ## How the skills are built

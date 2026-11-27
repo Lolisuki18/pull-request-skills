@@ -13,7 +13,7 @@ The code already shows **what** it does. A comment earns its place by saying **w
 
 ## Workflow
 
-Start each reply with `[Comments X/6: <Step>]` (per `CONVENTIONS.md`).
+Start each reply with `[Comments X/6: <Step>]`; inside a calling workflow, keep that workflow's label instead.
 
 1. **Read the code and its surroundings.** Open the function, its callers and its tests, and the neighbouring files. Intent often lives in the commit history (`git log -p` or `git blame` on the lines in question), the ticket, or a related test; use them to learn the *why*.
 2. **Learn the local convention before writing.** What comment style do neighbouring files use: JSDoc or TSDoc, Python docstring style (Google, NumPy, reST), Javadoc? Are comments in English or another language? Do they use `TODO(name)`? Match it; don't introduce a new style.
