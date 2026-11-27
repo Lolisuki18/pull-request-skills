@@ -41,7 +41,7 @@ Start each reply with `[PR Split X/7: <Step>]`; inside a calling workflow, keep 
 ## Rules
 
 - Do not rewrite history, force-push or delete branches without the user's explicit go-ahead. Show the commands and what they affect.
-- Never drop code: after the split, the union of the PRs must equal the original diff. For a stack, check `git diff <original-branch> <final-stacked-branch>`. For independent PRs there is no single final branch: apply all parts to the base in a temporary worktree and check that `git diff <original-branch>` against it is empty. Report that it is empty (or list the differences).
+- Never drop code: after the split, the union of the PRs must equal the original diff. For a stack, check `git diff <original-branch> <final-stacked-branch>`. For independent PRs there is no single final branch: apply all parts to the base in a temporary worktree and check that `git diff <original-branch>` against it is empty. Report that it is empty (or list the differences). If two "independent" PRs touch the same file and conflict when applied together, they are not independent: stack them or move the shared hunk into one PR, and say so.
 - Do not change behavior while splitting. No fixing, renaming or "improving" along the way.
 - Do not invent PR numbers or links.
 - If the pieces are too entangled to separate safely, say so and propose the least-bad split, or a preparatory refactor PR first.

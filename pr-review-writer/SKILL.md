@@ -51,9 +51,9 @@ Start each reply with `[PR Review X/8: <Step>]` (keep it outside the paste-ready
 2. **Restate the intent** to yourself in one or two sentences. If you can't, that is itself review feedback (the description is unclear).
 3. **Read the whole diff before commenting.** Many "issues" disappear once you see the rest of the change, and reading first lets you rank findings instead of narrating line by line. For big diffs, do a high-level pass (structure, approach, risk) first, then the details in the riskiest files. If the PR is too large to review well, say so and suggest how to split it — that is a legitimate finding.
 4. **Look at surrounding code, not just the diff.** Open the callers, the tests and the neighbouring files when a change's safety depends on them. A comment based on a guess about unseen code is the most common way reviews lose credibility.
-5. **Find issues in priority order** using `references/review-checklist.md`: correctness → security → data/concurrency → tests → design → readability → style. Spend your attention at the top of that list.
-6. **Write the comments**. For a diff under about 60 changed lines, load only the references you need (`comment-patterns.md` and one other); load all four for large diffs. Follow `references/comment-patterns.md` (labels, phrasing) and `references/human-voice.md` (tone, what makes a comment sound machine-written).
-7. **Write the summary** using `references/summary-templates.md`, including the verdict.
+5. **Find issues in priority order** using `references/review-checklist.md` (read it when you reach this step, not before; skip its "PR description" section unless you review a description): correctness → security → data/concurrency → tests → design → readability → style. Spend your attention at the top of that list.
+6. **Write the comments**. For a diff under about 60 changed lines, load only the references you need (`comment-patterns.md` and one other); load all four for large diffs. Read `references/comment-patterns.md` (labels, phrasing) and `references/human-voice.md` (tone, what makes a comment sound machine-written) when you reach this step, subject to that size rule.
+7. **Write the summary** using `references/summary-templates.md` (read it when you reach this step, subject to the size rule in step 6), including the verdict.
 8. **Self-check before showing it** (see below).
 
 ## Weight labels
