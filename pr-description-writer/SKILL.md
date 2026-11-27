@@ -106,7 +106,7 @@ Leave out:
 
 ## Honesty rules
 
-Never write that tests pass, CI is green, screenshots are attached or behaviour was verified on staging unless you saw it in this session. Results you did see in this session are written as real results with the command and count (for example `60 tests OK, python -m unittest`). Placeholders (`Tests: [pass/fail]`, `Screenshots: [attach]`) are only for results you did not see, so the user fills in the truth. Don't state a motivation, incident number or ticket id you didn't read.
+Before writing a claim about behavior (a parameter now works, a bug is fixed, a test passes), run the probe or the test once after the last change; if it was not run after the last change, say so. Never write that tests pass, CI is green, screenshots are attached or behaviour was verified on staging unless you saw it in this session. Results you did see in this session are written as real results with the command and count (for example `60 tests OK, python -m unittest`). Placeholders (`Tests: [pass/fail]`, `Screenshots: [attach]`) are only for results you did not see, so the user fills in the truth. Don't state a motivation, incident number or ticket id you didn't read.
 
 ## If you spot a real bug while reading the diff
 
