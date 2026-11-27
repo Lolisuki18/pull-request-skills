@@ -14,7 +14,7 @@ Turn a red check into one clear answer: what failed first, why, and what to do. 
 Start each reply with `[CI X/6: <Step>]`; inside a calling workflow, keep that workflow's label instead.
 
 1. **Get the real log.** Prefer evidence over memory: `gh pr checks`, `gh run list`, `gh run view <id> --log-failed` when the GitHub CLI is available; otherwise ask the user to paste the failing step's log. Never guess from the job name alone.
-2. **Find the first failure.** Read from the failing step upward to the first error, not the final "exit code 1". Later errors are usually noise. Note the step, command, exit code and the exact error text.
+2. **Find the first failure.** Read from the failing step upward to the first error, not the final "exit code 1". List every distinct failing test or step, not only the first. Treat a later failure as noise only when it shares the first failure's cause (same exception or stack frame); otherwise classify it separately, so a real regression is not hidden behind a flake. Note the step, command, exit code and the exact error text.
 3. **Classify**, using the evidence:
 
    | Class | Signs |
@@ -26,7 +26,7 @@ Start each reply with `[CI X/6: <Step>]`; inside a calling workflow, keep that w
    | Infrastructure | Runner timeout, registry or network 5xx, out of disk or memory, rate limit |
 
    Say which class you believe and what would change your mind. If two fit, say both.
-4. **Trace to the code.** Map the error to `file:line` in the diff (`git diff <base>...HEAD`). Check whether the failing test or step also fails on the base branch (`gh run list --branch <base>`): if yes, the PR did not cause it.
+4. **Trace to the code.** Map the error to `file:line` in the diff (`git diff <base>...HEAD`). Check whether the failing test or step also fails on the base branch (`gh run list --branch <base>`): if yes, the PR did not cause it (that shows it is pre-existing, not that it is flaky).
 5. **Reproduce locally when cheap.** Run the same command the CI step runs (from the workflow file, or directly from the log if no `.github/workflows/` file exists), with the same versions where possible. Report the real result. If it passes locally, list the differences to check: versions, env vars, OS, data, order of tests, clean vs cached install.
 6. **Propose the smallest fix**, matched to the class (**Hard stop:** wait for explicit user approval before editing files or regenerating lockfiles):
    - Code bug: the fix, plus the test that proves it. Offer to apply it.
@@ -52,5 +52,5 @@ Not verified: <what you could not run or see>
 - Do not re-run or push commits unless the user asks. Re-running to confirm a flake is fine when asked.
 - Never print secrets that appear in logs; refer to them by name.
 - If the log is truncated or missing, say what you need instead of guessing.
-- Only say "flaky" when you have evidence (passes on re-run, or fails on the base branch too).
+- Only say "flaky" when the same commit both passes and fails: rerun the test at least 5 times (or compare earlier runs) and report the counts. A test that fails on every run, on the base branch too, is deterministic, not flaky. Never retry or skip a test as the fix.
 - **Language:** reply in the user's language; keep error text and identifiers as they are.

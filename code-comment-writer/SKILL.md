@@ -16,7 +16,7 @@ The code already shows **what** it does. A comment earns its place by saying **w
 Start each reply with `[Comments X/6: <Step>]`; inside a calling workflow, keep that workflow's label instead.
 
 1. **Read the code and its surroundings.** Open the function, its callers and its tests, and the neighbouring files. Intent often lives in the commit history (`git log -p` or `git blame` on the lines in question), the ticket, or a related test; use them to learn the *why*.
-2. **Learn the local convention before writing.** What comment style do neighbouring files use: JSDoc or TSDoc, Python docstring style (Google, NumPy, reST), Javadoc? Are comments in English or another language? Do they use `TODO(name)`? Match it; don't introduce a new style.
+2. **Learn the local convention before writing.** What comment style do neighbouring files use: JSDoc or TSDoc, Python docstring style (Google, NumPy, reST), Javadoc? Are comments in English or another language? Do they use `TODO(name)`? Match it; don't introduce a new style. In a single-file repo with no neighbours, keep the file's own style.
 3. **Find the places a reader would get stuck.** Non-obvious decisions, workarounds, magic values, ordering or locking constraints, invariants, units, side effects, surprising edge cases, and public APIs without explanation. If the file is already sufficiently documented, stop and say no comments are needed.
 4. **Write or edit comments** following the rules below. Don't change code behaviour.
 5. **Verify each comment against the code** by tracing it. A wrong comment is worse than none.
@@ -32,7 +32,7 @@ Start each reply with `[Comments X/6: <Step>]`; inside a calling workflow, keep 
 - **Magic numbers and regexes**: where the value comes from and what it means.
 - **Surprising behaviour or edge cases**: what happens on empty input, on timeout, on a tie.
 - **Public API doc comments**: what it's for, what it returns and when it can fail. Describe parameters only when the name and type don't already say it. Add a short example if usage isn't obvious.
-- **TODOs** only with an owner or ticket and the condition: `TODO(FIN-123): remove once the v1 export is retired.`
+- **TODOs** only with an owner or ticket and the condition: `TODO(FIN-123): remove once the v1 export is retired.` Write `TODO(<owner>?)` only if the user gave an owner; otherwise write no TODO and mention the gap in the chat reply.
 
 ## What not to write
 
@@ -41,7 +41,7 @@ Start each reply with `[Comments X/6: <Step>]`; inside a calling workflow, keep 
 - **Commented-out code.** Delete it; it's in the history.
 - **Apologies and jokes** ("sorry, hacky", "magic, don't touch"). Say what's hacky and why, or fix it.
 - **Long essays** inline. If the explanation needs paragraphs, put it in a doc and link it.
-- **Anything you aren't sure of.** Don't invent a reason. If you can't tell why the code is the way it is, say what it observably does, and tell the user the reason is unknown so they can fill it in. Never write a confident explanation that you guessed.
+- **Anything you aren't sure of.** Don't invent a reason. If you can't tell why the code is the way it is, say what it observably does, and tell the user the reason is unknown so they can fill it in. Never write a confident explanation that you guessed, and never put gap text such as "reason not documented" into the source; put gaps in the chat reply.
 
 ## Style
 

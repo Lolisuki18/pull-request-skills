@@ -52,6 +52,7 @@ Explain how to stage each (`git add -p`, `git add <files>`). Each commit should 
 
 ## Rules
 
+- Before writing a claim about behavior (a parameter now works, a bug is fixed, a test passes), run the probe or the test once after the last change; if it was not run after the last change, say so.
 - Do not claim tests pass, a bug is fixed or performance improved unless you saw evidence. Put unverified claims in neither subject nor body.
 - Do not use filler ("various fixes", "misc changes", "WIP") unless the user asks for a WIP commit.
 - Amending or squashing: write the message for the final combined change, not a list of the old messages.
