@@ -13,7 +13,7 @@ The reviewer's question on every comment is "what did you do about this?". A goo
 
 ## Workflow
 
-Start replies with `[Review Reply X/5: <Step>]` (above the paste-ready drafts when showing status/steps).
+Start replies with `[Review Reply X/5: <Step>]` (above the paste-ready drafts when showing status/steps; inside a calling workflow, keep that workflow's label instead).
 
 1. **Gather the comments and the current state.**
    - Comments: pasted text, or for a GitHub PR `gh pr view <n> --comments` and `gh api repos/{owner}/{repo}/pulls/{n}/comments` (inline comments carry the file, line and id). Read the review summary too; it often holds the verdict and the one or two things that matter most.
